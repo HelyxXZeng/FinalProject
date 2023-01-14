@@ -42,7 +42,7 @@ namespace MP3_Final
         string fileName = string.Empty, path = string.Empty;
         List<Song> songs = new List<Song>();
         // dùng cho shuffle
-        List<Song> subSongs = new List<Song>(); 
+        List<Song> subSongs = new List<Song>();
         List<Song> search = new List<Song>();
         string current;
         int i = 0;// bien toan cuc chi vi tri bai hat trong playlist
@@ -50,7 +50,7 @@ namespace MP3_Final
         public static string head = Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + @"\PlayList\";
         string fav = head + @"Favorite.txt";
         string history = head + @"History.txt";
-        public static string currentPlaylist = null;
+        public static string currentPlaylist = string.Empty;
 
         DispatcherTimer timer;
         bool shuffleMedia = false;
@@ -103,7 +103,7 @@ namespace MP3_Final
             {
                 slider_seek.Value = 0;
                 tbStart.Text = "00:00";
-                media.Pause();                
+                media.Pause();
                 pausebtn.Content = pausebtn.FindResource("Play");
                 Storyboard s = (Storyboard)pausebtn.FindResource("stopellipse");
                 s.Begin();
@@ -234,8 +234,8 @@ namespace MP3_Final
                     Storyboard s = (Storyboard)pausebtn.FindResource("spinellipse");
                     s.Begin();
                     media.Play();
-                }   
-            } 
+                }
+            }
         }
         // add songname to playlist table
         private void Add_UcSongName(Song song, int index)
@@ -365,7 +365,7 @@ namespace MP3_Final
                     s.Begin();
                 }
             }
-            catch(Exception ex) { MessageBox.Show(ex.Message); }
+            catch (Exception ex) { MessageBox.Show(ex.Message); }
         }
 
         //Change properties of ucSongName fit current playing song
@@ -436,7 +436,7 @@ namespace MP3_Final
                 path = dialog.SelectedPath;
                 /*FileInfo[] file = new DirectoryInfo(path).GetFiles("*.mp3");*/
                 var fileInfos = new DirectoryInfo(path).GetFilesByExtentions(".wav", ".flac", ".aac", ".wma", ".wmv", ".avi", ".mpg", ".mpeg", ".m1v", ".mp2", ".mp3", ".mpa", ".mpe", ".m3u", ".mp4", ".mov", ".3g2", ".3gp2", ".3gp", ".3gpp", ".m4a", ".cda", ".aif", ".aifc", ".aiff", ".mid", ".midi", ".rmi", ".mkv", ".WAV", ".AAC", ".WMA", ".WMV", ".AVI", ".MPG", ".MPEG", ".M1V", ".MP2", ".MP3", ".MPA", ".MPE", ".M3U", ".MP4", ".MOV", ".3G2", ".3GP2", ".3GP", ".3GPP", ".M4A", ".CDA", ".AIF", ".AIFC", ".AIFF", ".MID", ".MIDI", ".RMI", ".MKV");
-                
+
                 string line;
                 bool heart = false;
                 foreach (FileInfo fil in fileInfos)
@@ -444,7 +444,7 @@ namespace MP3_Final
                     StreamReader reader = new StreamReader(fav);
                     while ((line = reader.ReadLine()) != null)
                     {
-                        if(line == fil.FullName)
+                        if (line == fil.FullName)
                         {
                             heart = true;
                             break;
@@ -599,7 +599,7 @@ namespace MP3_Final
             Grid.SetColumn(a, 1);
 
             Grid.SetColumnSpan(a, 2);
-            
+
             Music_Player.Children.Add(a);
             //Grid.SetRow(a, 0);
             //Grid.SetRowSpan(a, 4);
@@ -641,7 +641,7 @@ namespace MP3_Final
         {
             if (!System.IO.File.Exists(path))
             {
-                using (System.IO.File.Create(path));
+                using (System.IO.File.Create(path)) ;
             }
             string[] contents = System.IO.File.ReadAllLines(path);
             string line;
@@ -688,7 +688,7 @@ namespace MP3_Final
             {
                 using (System.IO.File.Create(path)) ;
                 listMenu.Children.Add(button);
-            }    
+            }
         }
 
         void LoadPlayList(string path)
@@ -707,7 +707,7 @@ namespace MP3_Final
                     button.Tag = file;
                     listMenu.Children.Add(button);
                 }
-            }    
+            }
         }
 
         public static string GetFileNameOnly(string fullName)
@@ -754,7 +754,7 @@ namespace MP3_Final
         {
             shufflebtn.Foreground = (shufflebtn.Foreground != Brushes.DeepPink) ? Brushes.DeepPink : Brushes.White;
             shuffleMedia = (shuffleMedia == false && shufflebtn.Foreground == Brushes.DeepPink) ? true : false;
-            i = 0; 
+            i = 0;
 
             if (shuffleMedia)
             {
@@ -1017,8 +1017,8 @@ namespace MP3_Final
                     slviewUC.PathImage = bitmap;
                 }
             }
-            slviewUC.Lyric = file.Tag.Lyrics;  
-            
+            slviewUC.Lyric = file.Tag.Lyrics;
+
             if (activeSlv != null) centerUI.Children.Remove(activeSlv);
             activeSlv = slviewUC;
             slviewUC.Close += new Action<object>(CloseLyric);
@@ -1095,11 +1095,6 @@ namespace MP3_Final
             {
                 Add_UcSongName(search[i], i);
             }
-        }
-
-        private void Home_Click(object sender, RoutedEventArgs e)
-        {
-            OpenPlayList(head + @"history" + tail);
         }
 
         private void darkmodeBtn_Click(object sender, RoutedEventArgs e)
