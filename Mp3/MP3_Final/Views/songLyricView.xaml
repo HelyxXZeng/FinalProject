@@ -20,7 +20,7 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
 
-            
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="*"/>
@@ -41,8 +41,6 @@
                     <TextBlock Text="{Binding ElementName=slrView, Path=Lyric}" TextWrapping="Wrap" FontWeight="Bold" Foreground="White" FontSize="25" VerticalAlignment="Center"/>
                 </StackPanel>
             </ScrollViewer>
-            
-            
 
         </Grid>
     </Border>

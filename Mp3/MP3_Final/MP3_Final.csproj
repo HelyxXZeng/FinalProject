@@ -13,6 +13,7 @@
     <None Remove="IconApp\Spotify.ico" />
     <None Remove="Images\DarkMode.png" />
     <None Remove="Images\delete.png" />
+    <None Remove="Images\folderSpotify.png" />
     <None Remove="Images\Like.png" />
     <None Remove="Images\m1.jpg" />
     <None Remove="Images\m2.png" />
@@ -41,6 +42,7 @@
     <Resource Include="IconApp\Spotify.ico" />
     <Resource Include="Images\DarkMode.png" />
     <Resource Include="Images\delete.png" />
+    <Resource Include="Images\folderSpotify.png" />
     <Resource Include="Images\Like.png" />
     <Resource Include="Images\m1.jpg" />
     <Resource Include="Images\m2.png" />
@@ -56,6 +58,10 @@
     <Resource Include="Images\SkipPrevious.png" />
     <Resource Include="Images\upload.png" />
     <Resource Include="Images\Volume.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="LocalFiles\" />
   </ItemGroup>
 
 </Project>
