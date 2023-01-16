@@ -20,7 +20,7 @@ namespace MP3_Final
     /// </summary>
     public partial class AddToPlayList : Window
     {
-        public string playListPath = string.Empty;
+        public string playListPath = null;
 
         public AddToPlayList()
         {
@@ -34,7 +34,7 @@ namespace MP3_Final
             listPlayList.Children.Clear();
             foreach (var file in files)
             {
-                if (System.IO.Path.GetFileName(file) != "Favorite.txt")
+                if (System.IO.Path.GetFileName(file) != "Favorite.txt" && System.IO.Path.GetFileName(file) != "History.txt")
                 {
                     System.Windows.Controls.Button button = new System.Windows.Controls.Button();
                     button.Style = System.Windows.Application.Current.TryFindResource("albumButton") as Style;

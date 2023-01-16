@@ -617,7 +617,24 @@ namespace MP3_Final
             System.Windows.Controls.Button button = sender as System.Windows.Controls.Button;
             string path = head + button.Content.ToString() + tail;
             currentPlaylist = button.Tag.ToString();
+            ChangeColorClickPlayList();
             OpenPlayList(path);
+        }
+
+        void ChangeColorClickPlayList()
+        {
+            var list = listMenu.Children;
+            foreach (var item in list)
+            {
+                System.Windows.Controls.Button button = item as System.Windows.Controls.Button;
+                button.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#02be68");
+                button.Foreground = Brushes.Black;
+                if (button.Tag == currentPlaylist)
+                {
+                    button.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#30ad9a");
+                    button.Foreground = Brushes.WhiteSmoke;
+                }
+            }
         }
 
         void OpenPlayList(string path)
