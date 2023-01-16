@@ -188,3 +188,5 @@ StyleCop.Cache
 bin
 obj
 *.txt
+*/.vs
+*/.vs/
