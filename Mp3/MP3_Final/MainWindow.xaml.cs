@@ -559,6 +559,7 @@ namespace MP3_Final
 
         private void Favorite_Click(object sender, RoutedEventArgs e)
         {
+            NonePlaylist();
             onSearch = false;
             playSearch = false;
             StreamReader reader = new StreamReader(fav);
@@ -895,6 +896,7 @@ namespace MP3_Final
         //real load file
         private void LoadFileButton(object sender, RoutedEventArgs e)
         {
+            NonePlaylist();
             if (onSearch)
             {
                 songMenu.Children.Clear();
@@ -943,6 +945,7 @@ namespace MP3_Final
         //real load folder
         private void LoadFolderButton(object sender, RoutedEventArgs e)
         {
+            NonePlaylist();
             if (onSearch)
             {
                 songMenu.Children.Clear();
@@ -1094,6 +1097,25 @@ namespace MP3_Final
             for (int i = 0; i < search.Count; i++)
             {
                 Add_UcSongName(search[i], i);
+            }
+        }
+
+        private void Home_Click(object sender, RoutedEventArgs e)
+        {
+            NonePlaylist();
+            onSearch = false;
+            playSearch = false;
+            OpenPlayList(head + @"History" + tail);
+        }
+
+        void NonePlaylist()
+        {
+            var list = listMenu.Children;
+            foreach (var item in list)
+            {
+                System.Windows.Controls.Button button = item as System.Windows.Controls.Button;
+                button.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#02be68");
+                button.Foreground = Brushes.Black;
             }
         }
 
