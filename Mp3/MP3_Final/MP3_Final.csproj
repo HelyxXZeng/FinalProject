@@ -58,4 +58,8 @@
     <Resource Include="Images\Volume.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="LocalFiles\" />
+  </ItemGroup>
+
 </Project>

@@ -168,10 +168,11 @@
             </Style>
 
             <Style x:Key="albumButton" TargetType="Button">
-                <Setter Property="Background" Value="#02be68"/>
-                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Foreground" Value="White"/>
                 <Setter Property="Height" Value="50"/>
-                <Setter Property="FontSize" Value="25"/>
+                
+                <Setter Property="FontSize" Value="23"/>
                 <Setter Property="FontWeight" Value="Bold"/>
                 <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
                 <Setter Property="Tag" Value="Collapsed"/>
@@ -179,15 +180,15 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
                             <Border Background="{TemplateBinding Background}">
-                                <ContentPresenter HorizontalAlignment="Stretch" 
-                                VerticalAlignment="Center" Margin="35 0 0 0"/>
+                                <ContentPresenter Margin="20 0 0 0" HorizontalAlignment="Stretch" 
+                                VerticalAlignment="Center" />
                             </Border>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="#30ad9a"/>
+                        <Setter Property="Background" Value="#1aab7a"/>
                         <Setter Property="Foreground" Value="WhiteSmoke"/>
                         <Setter Property="Tag" Value="Visible"/>
                     </Trigger>

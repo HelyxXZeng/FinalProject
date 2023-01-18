@@ -166,10 +166,10 @@
 
                     </Popup>
 
-                    <Button Click="CreateAlbumClick" Style="{StaticResource menuButton}"  Grid.Row="6" >
+                    <Button Click="DisplayPlaylists" Style="{StaticResource menuButton}"  Grid.Row="6" >
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="PlaylistMusic" Style="{StaticResource menuButtonIcon}"/>
-                            <TextBlock Text="Your Playlists" Style="{StaticResource menuButtonTitle}"/>
+                            <TextBlock Text="Your Library" Style="{StaticResource menuButtonTitle}"/>
                         </StackPanel>
                     </Button>
 
