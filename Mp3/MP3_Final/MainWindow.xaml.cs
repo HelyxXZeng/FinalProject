@@ -136,7 +136,14 @@ namespace MP3_Final
                     staticImage.ImageSource = bitmap; // load hinh len anh nho 
                 }
             }
-            string title = "Tên bài hát:" + file.Tag.Title, album = "Album: " + file.Tag.Album, date = "Năm ra mắt: " + ((file.Tag.Year == 0) ? "" : file.Tag.Year.ToString()),
+            string tbh = "";
+            if (file.Tag.Title == "" || file.Tag.Title == null)
+            {
+                string[] temp = file.Name.Split("\\");
+                tbh = temp[temp.Length - 1].Split(".")[0];
+            }
+            else tbh = file.Tag.Title;
+            string title = "Tên bài hát:" + tbh, album = "Album: " + file.Tag.Album, date = "Năm ra mắt: " + ((file.Tag.Year == 0) ? "" : file.Tag.Year.ToString()),
                 kbit = "Bitrate: " + file.Properties.AudioBitrate.ToString() + "kbps";
             string[] artist = file.Tag.Performers, gerne = file.Tag.Genres;
             // infortexblock at sliderbar section
@@ -249,7 +256,15 @@ namespace MP3_Final
                 uc.Number = '0' + temp.ToString();
             else
                 uc.Number = temp.ToString();
-            uc.Title = file.Tag.Title;
+            //code fix title begin
+            string tbh = "";
+            if (file.Tag.Title == "" || file.Tag.Title == null)
+            {
+                tbh = System.IO.Path.GetFileNameWithoutExtension(file.Name);
+            }
+            else tbh = file.Tag.Title;
+            uc.Title = tbh;
+            // code fix title end 
             string[] artist = file.Tag.Performers;
             string listSinger = "";
             for (int i = 0; i < artist.Count(); i++)
@@ -395,7 +410,7 @@ namespace MP3_Final
             // code open 1 file
             dialog.Multiselect = false;
             dialog.DefaultExt = ".mp3,.flac,.ogg,.wav"; // Default file extension
-            dialog.Filter = "All Media Files|*.wav;*.flac;*.aac;*.wma;*.wmv;*.avi;*.mpg;*.mpeg;*.m1v;*.mp2;*.mp3;*.mpa;*.mpe;*.m3u;*.mp4;*.mov;*.3g2;*.3gp2;*.3gp;*.3gpp;*.m4a;*.cda;*.aif;*.aifc;*.aiff;*.mid;*.midi;*.rmi;*.mkv;*.WAV;*.AAC;*.WMA;*.WMV;*.AVI;*.MPG;*.MPEG;*.M1V;*.MP2;*.MP3;*.MPA;*.MPE;*.M3U;*.MP4;*.MOV;*.3G2;*.3GP2;*.3GP;*.3GPP;*.M4A;*.CDA;*.AIF;*.AIFC;*.AIFF;*.MID;*.MIDI;*.RMI;*.MKV"; // Filter files by extension 
+            dialog.Filter = "All Media Files|*.wav;*.flac;*.aac;*.wma;*.wmv;*.avi;*.mpg;*.mpeg;*.mp3;*.mp4;*.mov;*.m4a;*.mid;*.midi;*.rmi;*.mkv;*.WAV;*.FLAC;*.AAC;*.WMA;*.WMV;*.AVI;*.MPG;*.MPEG;*.MP3;*.MP4;*.MOV;*.M4A;*.MID;*.MIDI;*.RMI;*.MKV"; // Filter files by extension 
 
             // ket qua cua dialog
             if (dialog.ShowDialog() == false)
@@ -435,7 +450,7 @@ namespace MP3_Final
                 if (result == System.Windows.Forms.DialogResult.Cancel) return;// thoat va khong thuc hien doan code duoi
                 path = dialog.SelectedPath;
                 /*FileInfo[] file = new DirectoryInfo(path).GetFiles("*.mp3");*/
-                var fileInfos = new DirectoryInfo(path).GetFilesByExtentions(".wav", ".flac", ".aac", ".wma", ".wmv", ".avi", ".mpg", ".mpeg", ".m1v", ".mp2", ".mp3", ".mpa", ".mpe", ".m3u", ".mp4", ".mov", ".3g2", ".3gp2", ".3gp", ".3gpp", ".m4a", ".cda", ".aif", ".aifc", ".aiff", ".mid", ".midi", ".rmi", ".mkv", ".WAV", ".AAC", ".WMA", ".WMV", ".AVI", ".MPG", ".MPEG", ".M1V", ".MP2", ".MP3", ".MPA", ".MPE", ".M3U", ".MP4", ".MOV", ".3G2", ".3GP2", ".3GP", ".3GPP", ".M4A", ".CDA", ".AIF", ".AIFC", ".AIFF", ".MID", ".MIDI", ".RMI", ".MKV");
+                var fileInfos = new DirectoryInfo(path).GetFilesByExtentions("*.wav", "*.flac", "*.aac", "*.wma", "*.wmv", "*.avi", "*.mpg", "*.mpeg", "*.mp3", "*.mp4", "*.mov", "*.m4a", "*.mid", "*.midi", "*.rmi", "*.mkv", "*.WAV", "*.FLAC", "*.AAC", "*.WMA", "*.WMV", "*.AVI", "*.MPG", "*.MPEG", "*.MP3", "*.MP4", "*.MOV", "*.M4A", "*.MID", "*.MIDI", "*.RMI", "*.MKV");
 
                 string line;
                 bool heart = false;
