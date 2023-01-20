@@ -147,7 +147,7 @@ namespace MP3_Final
                 kbit = "Bitrate: " + file.Properties.AudioBitrate.ToString() + "kbps";
             string[] artist = file.Tag.Performers, gerne = file.Tag.Genres;
             // infortexblock at sliderbar section
-            titleTxtBlock.Text = file.Tag.Title;
+            titleTxtBlock.Text = tbh;
             singerTxtBlock.Text = "";
             for (int i = 0; i < artist.Count(); i++)
             {
