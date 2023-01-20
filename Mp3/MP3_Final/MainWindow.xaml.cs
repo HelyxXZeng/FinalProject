@@ -974,17 +974,32 @@ namespace MP3_Final
                 path = dialog.SelectedPath;
                 /*FileInfo[] file = new DirectoryInfo(path).GetFiles("*.mp3");*/
                 var fileInfos = new DirectoryInfo(path).GetFilesByExtentions(".wav", ".flac", ".aac", ".wma", ".wmv", ".avi", ".mpg", ".mpeg", ".m1v", ".mp2", ".mp3", ".mpa", ".mpe", ".m3u", ".mp4", ".mov", ".3g2", ".3gp2", ".3gp", ".3gpp", ".m4a", ".cda", ".aif", ".aifc", ".aiff", ".mid", ".midi", ".rmi", ".mkv", ".WAV", ".AAC", ".WMA", ".WMV", ".AVI", ".MPG", ".MPEG", ".M1V", ".MP2", ".MP3", ".MPA", ".MPE", ".M3U", ".MP4", ".MOV", ".3G2", ".3GP2", ".3GP", ".3GPP", ".M4A", ".CDA", ".AIF", ".AIFC", ".AIFF", ".MID", ".MIDI", ".RMI", ".MKV");
-                //
 
+
+                //
                 string folderName = Path.GetFileName(path);
-                PlaylistCard plCard = new PlaylistCard();
-                plCard.Title = folderName;
-                plCard.ClickOpen += (sender, e) => OpenPlCard(sender, e, folderName);
-                plViewUC.playlist.Children.Add(plCard);
                 folderName = headCard + folderName + tail;
-                using (System.IO.File.Create(folderName)) ;
-
+                string[] folders = Directory.GetFiles(headCard);
+                bool dupCheck = false;
+                foreach (var fd in folders)
+                {
+                    if (fd == folderName)
+                    {
+                        dupCheck = true;
+                        break;
+                    }
+                }
+                if (!dupCheck)
+                {
+                    PlaylistCard plCard = new PlaylistCard();
+                    plCard.Title = GetFileNameOnly(System.IO.Path.GetFileName(folderName));
+                    plCard.ClickOpen += (sender, e) => OpenPlCard(sender, e, folderName);
+                    plViewUC.playlist.Children.Add(plCard);
+                    using (System.IO.File.Create(folderName)) ;
+                }
                 //
+
+
                 string line;
                 bool heart = false;
                 foreach (FileInfo fil in fileInfos)
