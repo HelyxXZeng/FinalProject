@@ -138,6 +138,7 @@ namespace MP3_Final
             }
             else
             {
+                staticImage.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/Images/m2.png"));
                 img.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/Images/m2.png"));
             }
             string tbh = "";
