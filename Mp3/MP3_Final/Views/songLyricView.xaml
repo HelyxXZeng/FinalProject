@@ -4,10 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MP3_Final.Views"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              Name="slrView">
-    <Border Height="auto">
+    <Border x:Name="border" Height="auto">
         <Border.Background>
             <DynamicResource ResourceKey="greenBgr1"/>
         </Border.Background>
@@ -20,13 +22,67 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
 
-            
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Button Click="CloseClick">
-                <TextBlock Text="Back"/>
+                <Button.Style >
+                    <Style TargetType="Button">
+
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Foreground" Value="#ffffff"/>
+                        <Setter Property="Width" Value="60"/>
+                        <Setter Property="Height" Value="50"/>
+                        <Setter Property="Margin" Value="5 0 0 0"/>
+                        <Setter Property="HorizontalAlignment" Value="Left"/>
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}"
+                            CornerRadius="5">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Button.Style>
+                <materialDesign:PackIcon Kind="KeyboardBackspace">
+                    <materialDesign:PackIcon.Style>
+                        <Style TargetType="materialDesign:PackIcon">
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="Width" Value="50"/>
+                            <Setter Property="Height" Value="40"/>
+
+                            <Style.Triggers>
+                                <EventTrigger RoutedEvent="UIElement.MouseEnter">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Duration="0:0:0.1" Storyboard.TargetProperty="Width" To="60" />
+                                            <DoubleAnimation Duration="0:0:0.1" Storyboard.TargetProperty="Height" To="50" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <EventTrigger RoutedEvent="UIElement.MouseLeave">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Duration="0:0:0.1" Storyboard.TargetProperty="Width" To="50" />
+                                            <DoubleAnimation Duration="0:0:0.1" Storyboard.TargetProperty="Height" To="40" />
+
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Style.Triggers>
+                        </Style>
+
+
+                    </materialDesign:PackIcon.Style>
+                </materialDesign:PackIcon>
+
             </Button>
             <TextBlock Grid.Row="0" Grid.Column="1" Text="Lyrics" TextWrapping="Wrap" Foreground="White" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
