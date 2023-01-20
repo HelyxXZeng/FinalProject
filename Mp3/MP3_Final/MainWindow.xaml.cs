@@ -410,7 +410,7 @@ namespace MP3_Final
             // code open 1 file
             dialog.Multiselect = false;
             dialog.DefaultExt = ".mp3,.flac,.ogg,.wav"; // Default file extension
-            dialog.Filter = "All Media Files|*.wav;*.flac;*.aac;*.wma;*.wmv;*.avi;*.mpg;*.mpeg;*.mp3;*.mp4;*.mov;*.m4a;*.mid;*.midi;*.rmi;*.mkv;*.WAV;*.FLAC;*.AAC;*.WMA;*.WMV;*.AVI;*.MPG;*.MPEG;*.MP3;*.MP4;*.MOV;*.M4A;*.MID;*.MIDI;*.RMI;*.MKV"; // Filter files by extension 
+            dialog.Filter = "All Media Files|*.wav;*.flac;*.aac;*.wma;*.wmv;*.avi;*.mp3;*.mp4;*.mov;*.m4a;*.mid;*.midi;*.rmi;*.mkv;*.WAV;*.FLAC;*.AAC;*.WMA;*.WMV;*.AVI;*.MP3;*.MP4;*.MOV;*.M4A;*.MID;*.MIDI;*.RMI;*.MKV"; // Filter files by extension 
 
             // ket qua cua dialog
             if (dialog.ShowDialog() == false)
@@ -450,7 +450,7 @@ namespace MP3_Final
                 if (result == System.Windows.Forms.DialogResult.Cancel) return;// thoat va khong thuc hien doan code duoi
                 path = dialog.SelectedPath;
                 /*FileInfo[] file = new DirectoryInfo(path).GetFiles("*.mp3");*/
-                var fileInfos = new DirectoryInfo(path).GetFilesByExtentions("*.wav", "*.flac", "*.aac", "*.wma", "*.wmv", "*.avi", "*.mpg", "*.mpeg", "*.mp3", "*.mp4", "*.mov", "*.m4a", "*.mid", "*.midi", "*.rmi", "*.mkv", "*.WAV", "*.FLAC", "*.AAC", "*.WMA", "*.WMV", "*.AVI", "*.MPG", "*.MPEG", "*.MP3", "*.MP4", "*.MOV", "*.M4A", "*.MID", "*.MIDI", "*.RMI", "*.MKV");
+                var fileInfos = new DirectoryInfo(path).GetFilesByExtentions("*.wav", "*.flac", "*.aac", "*.wma", "*.wmv", "*.avi", "*.mp3", "*.mp4", "*.mov", "*.m4a", "*.mid", "*.midi", "*.rmi", "*.mkv", "*.WAV", "*.FLAC", "*.AAC", "*.WMA", "*.WMV", "*.AVI", "*.MP3", "*.MP4", "*.MOV", "*.M4A", "*.MID", "*.MIDI", "*.RMI", "*.MKV");
 
                 string line;
                 bool heart = false;
