@@ -29,7 +29,9 @@ using static System.Net.WebRequestMethods;
 using static System.Windows.Forms.LinkLabel;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
+using File = System.IO.File;
 using MessageBox = System.Windows.MessageBox;
+using Path = System.IO.Path;
 
 namespace MP3_Final
 {
@@ -51,9 +53,16 @@ namespace MP3_Final
         string fav = head + @"Favorite.txt";
         string history = head + @"History.txt";
         public static string currentPlaylist = string.Empty;
-
         DispatcherTimer timer;
         bool shuffleMedia = false;
+
+
+        //
+        public static string headCard = Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + @"\LocalFiles\";
+        string localfilesPath = headCard + "Local Files.txt";
+        PlaylistsView plViewUC = new PlaylistsView();
+        songLyricView slrViewUC = new songLyricView();
+        //
         public class Song
         {
             public bool favor = false;
@@ -80,8 +89,16 @@ namespace MP3_Final
                 using (System.IO.File.Create(history)) ;
             }
 
-            LoadPlayList(head);
+            if (!System.IO.File.Exists(localfilesPath))
+            {
+                using (System.IO.File.Create(localfilesPath)) ;
+            }
 
+            LoadPlayList(head);
+            //
+            LoadPlaylistUC(headCard);
+            LoadPlaylistUC(head);
+            //
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(500);
             timer.Tick += Timer_Tick;
@@ -553,6 +570,7 @@ namespace MP3_Final
                 current = subSongs[i].path;
                 media.Open(new Uri(subSongs[i].path));
             }
+            getLyric(slrViewUC, current);
             media.Position = TimeSpan.Zero;// chay nhac tu 00:00
             media.Play();
         }
@@ -589,28 +607,6 @@ namespace MP3_Final
             //media.Open(new Uri(fileName));
             //media.Play();
         }
-
-        private UserControl1 activeUI = null;
-        private void CreateAlbumClick(object sender, RoutedEventArgs e)
-        {
-            if (activeUI != null) Music_Player.Children.Remove(activeUI);
-            UserControl1 a = new UserControl1();
-            activeUI = a;
-            a.Close += new Action<object>(OnClose);
-            Grid.SetColumn(a, 1);
-
-            Grid.SetColumnSpan(a, 2);
-
-            Music_Player.Children.Add(a);
-            //Grid.SetRow(a, 0);
-            //Grid.SetRowSpan(a, 4);
-        }
-
-        private void OnClose(object sender)
-        {
-            Music_Player.Children.Remove((UserControl1)sender);
-        }
-
         private void PlayListClick(object sender, RoutedEventArgs e)
         {
             onSearch = false;
@@ -628,12 +624,14 @@ namespace MP3_Final
             foreach (var item in list)
             {
                 System.Windows.Controls.Button button = item as System.Windows.Controls.Button;
-                button.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#02be68");
-                button.Foreground = Brushes.Black;
+                button.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("Transparent");
+                //button.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#02be68");
+                //button.Foreground = Brushes.Black;
                 if (button.Tag == currentPlaylist)
                 {
-                    button.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#30ad9a");
-                    button.Foreground = Brushes.WhiteSmoke;
+                    button.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#1aab7a");                   
+                    //button.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#30ad9a");
+                    //button.Foreground = Brushes.WhiteSmoke;
                 }
             }
         }
@@ -744,9 +742,20 @@ namespace MP3_Final
             else i = songs.Count - 1;
             media.Stop();
             if (!shuffleMedia)
+            {
+                current = songs[i].path;
                 media.Open(new Uri(songs[i].path));
+            }
             else
+            {
+                current = subSongs[i].path;
                 media.Open(new Uri(subSongs[i].path));
+            }
+            //if (!shuffleMedia)
+            //    media.Open(new Uri(songs[i].path));
+            //else
+            //    media.Open(new Uri(subSongs[i].path));
+            getLyric(slrViewUC, current);
             media.Position = TimeSpan.Zero;// chay nhac tu 00:00
             media.Play();
         }
@@ -940,6 +949,7 @@ namespace MP3_Final
             //code duoi la chay nhac    
             //media.Open(new Uri(fileName));
             Add_UcSongName(songs[i], i);
+            AddFile(localfilesPath, song.path);
             //media.Play();
         }
         //real load folder
@@ -960,6 +970,31 @@ namespace MP3_Final
                 path = dialog.SelectedPath;
                 /*FileInfo[] file = new DirectoryInfo(path).GetFiles("*.mp3");*/
                 var fileInfos = new DirectoryInfo(path).GetFilesByExtentions(".wav", ".flac", ".aac", ".wma", ".wmv", ".avi", ".mpg", ".mpeg", ".m1v", ".mp2", ".mp3", ".mpa", ".mpe", ".m3u", ".mp4", ".mov", ".3g2", ".3gp2", ".3gp", ".3gpp", ".m4a", ".cda", ".aif", ".aifc", ".aiff", ".mid", ".midi", ".rmi", ".mkv", ".WAV", ".AAC", ".WMA", ".WMV", ".AVI", ".MPG", ".MPEG", ".M1V", ".MP2", ".MP3", ".MPA", ".MPE", ".M3U", ".MP4", ".MOV", ".3G2", ".3GP2", ".3GP", ".3GPP", ".M4A", ".CDA", ".AIF", ".AIFC", ".AIFF", ".MID", ".MIDI", ".RMI", ".MKV");
+
+
+                //
+                string folderName = Path.GetFileName(path);
+                folderName = headCard + folderName + tail;
+                string[] folders = Directory.GetFiles(headCard);
+                bool dupCheck = false;
+                foreach (var fd in folders)
+                {
+                    if (fd == folderName)
+                    {
+                        dupCheck = true;
+                        break;
+                    }
+                }
+                if (!dupCheck)
+                {
+                    PlaylistCard plCard = new PlaylistCard();
+                    plCard.Title = GetFileNameOnly(System.IO.Path.GetFileName(folderName));
+                    plCard.ClickOpen += (sender, e) => OpenPlCard(sender, e, folderName);
+                    plViewUC.playlist.Children.Add(plCard);
+                    using (System.IO.File.Create(folderName)) ;
+                }
+                //
+
 
                 string line;
                 bool heart = false;
@@ -988,21 +1023,22 @@ namespace MP3_Final
                     subSongs.Add(song);
                     int index = songs.Count - 1;
                     Add_UcSongName(songs[index], index);
+                    AddFile(folderName, song.path);
                 }
             }
         }
 
 
         songLyricView activeSlv = null;
-        private void DisplayLyric(object sender, RoutedEventArgs e)
+
+        private void getLyric(songLyricView slr, string path)
         {
-            songLyricView slviewUC = new songLyricView();
             TagLib.File file;
             //if (!shuffleMedia)
             //    file = TagLib.File.Create(songs[i].path);
             //else
             //    file = TagLib.File.Create(subSongs[i].path);
-            file = TagLib.File.Create(current);
+            file = TagLib.File.Create(path);
             var firstp = file.Tag.Pictures.FirstOrDefault();
             if (firstp != null)
             {
@@ -1017,21 +1053,54 @@ namespace MP3_Final
                     //memoryStream.Dispose();
                     bitmap.EndInit();
 
-                    slviewUC.PathImage = bitmap;
+                    slr.PathImage = bitmap;
                 }
             }
-            slviewUC.Lyric = file.Tag.Lyrics;
+            slr.Lyric = file.Tag.Lyrics;
+        }
+        private void DisplayLyric(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                getLyric(slrViewUC, current);
+                //TagLib.File file;
+                ////if (!shuffleMedia)
+                ////    file = TagLib.File.Create(songs[i].path);
+                ////else
+                ////    file = TagLib.File.Create(subSongs[i].path);
+                //file = TagLib.File.Create(current);
+                //var firstp = file.Tag.Pictures.FirstOrDefault();
+                //if (firstp != null)
+                //{
+                //    MemoryStream memoryStream = new MemoryStream(file.Tag.Pictures[0].Data.Data);
+                //    memoryStream.Seek(0, SeekOrigin.Begin);
+                //    if (file.Tag.Pictures != null && file.Tag.Pictures.Length != 0)
+                //    {
+                //        //memoryStream.Write(pData, 0, Convert.ToInt32(pData.Length));
+                //        BitmapImage bitmap = new BitmapImage();
+                //        bitmap.BeginInit();
+                //        bitmap.StreamSource = memoryStream;
+                //        //memoryStream.Dispose();
+                //        bitmap.EndInit();
 
-            if (activeSlv != null) centerUI.Children.Remove(activeSlv);
-            activeSlv = slviewUC;
-            slviewUC.Close += new Action<object>(CloseLyric);
-            Grid.SetColumn(slviewUC, 0);
+                //        slrViewUC.PathImage = bitmap;
+                //    }
+                //}
+                //slrViewUC.Lyric = file.Tag.Lyrics;
 
-            Grid.SetColumnSpan(slviewUC, 2);
+                if (activeSlv != null) centerUI.Children.Remove(activeSlv);
+                activeSlv = slrViewUC;
+                slrViewUC.Close += new Action<object>(CloseLyric);
+                Grid.SetColumn(slrViewUC, 0);
 
-            centerUI.Children.Add(slviewUC);
-            //Grid.SetRow(a, 0);
-            //Grid.SetRowSpan(a, 4);
+                Grid.SetColumnSpan(slrViewUC, 2);
+
+                centerUI.Children.Add(slrViewUC);
+                //Grid.SetRow(a, 0);
+                //Grid.SetRowSpan(a, 4);
+            }
+            catch { }
+            
         }
 
         private void CloseLyric(object sender)
@@ -1100,6 +1169,113 @@ namespace MP3_Final
             }
         }
 
+
+        PlaylistsView active = null;
+
+        private void DisplayPlaylists(object sender, RoutedEventArgs e)
+        {
+            if (active != null) centerUI.Children.Remove(active);
+            active = plViewUC;
+            plViewUC.Close += new Action<object>(ClosePlaylistView);
+            Grid.SetColumn(plViewUC, 0);
+            Grid.SetColumnSpan(plViewUC, 2);
+            centerUI.Children.Add(plViewUC);
+            string[] files = Directory.GetFiles(head);
+
+            for (int i = 0; i < files.Length; i++)
+            {
+                string filepath = GetFileNameOnly(System.IO.Path.GetFileName(files[i]));
+                string[] lines = File.ReadAllLines(files[i]);
+                for (int j = 0; j < plViewUC.playlist.Children.Count; j++)
+                {
+                    PlaylistCard plCard = (PlaylistCard)plViewUC.playlist.Children[j];
+                    if (filepath == plCard.Title.ToString())
+                    {
+                        if (lines.Length == 0)
+                        {
+                            BitmapImage bitmap = new BitmapImage();
+                            bitmap.BeginInit();
+                            string urisource = Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + "/Images/m2.png";
+                            bitmap.UriSource = new Uri(urisource);
+                            bitmap.EndInit();
+                            plCard.PathImage = bitmap;
+                        }
+                        else
+                        {
+                            TagLib.File file = TagLib.File.Create(lines[0]);
+                            var firstp = file.Tag.Pictures.FirstOrDefault();
+                            if (firstp != null)
+                            {
+                                MemoryStream memoryStream = new MemoryStream(file.Tag.Pictures[0].Data.Data);
+                                memoryStream.Seek(0, SeekOrigin.Begin);
+                                if (file.Tag.Pictures != null && file.Tag.Pictures.Length != 0)
+                                {
+                                    //memoryStream.Write(pData, 0, Convert.ToInt32(pData.Length));
+                                    BitmapImage bitmap = new BitmapImage();
+                                    bitmap.BeginInit();
+                                    bitmap.StreamSource = memoryStream;
+                                    //memoryStream.Dispose();
+                                    bitmap.EndInit();
+
+                                    plCard.PathImage = bitmap;
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+
+        private void LoadPlaylistUC(string path)
+        {
+            string[] files = Directory.GetFiles(path);
+            if (System.IO.Path.GetFileName(path) == "LocalFiles")
+                plViewUC.playlist.Children.Clear();
+            foreach (var file in files)
+            {
+                PlaylistCard plCard = new PlaylistCard();
+                plCard.Title = GetFileNameOnly(System.IO.Path.GetFileName(file));
+                plViewUC.playlist.Children.Add(plCard);
+                plCard.ClickOpen += (sender, e) => OpenPlCard(sender, e, file);
+            }
+        }
+
+
+        private void OpenPlCard(object sender, RoutedEventArgs e, string Path)
+        {
+            OpenPlayList(Path);
+            ClosePlaylistView(plViewUC);
+        }
+
+        private void ClosePlaylistView(object sender)
+        {
+            centerUI.Children.Remove((PlaylistsView)sender);
+        }
+
+
+        private void AddFile(string Playlistpath, string songPath)
+        {
+            if (Playlistpath != null)
+            {
+                string[] files = System.IO.File.ReadAllLines(Playlistpath);
+                foreach (string file in files)
+                {
+                    if (songPath == file)
+                    {
+                        return;
+                    }
+                }
+
+                if (new FileInfo(Playlistpath).Length != 0)
+                {
+                    System.IO.File.AppendAllText(Playlistpath, "\n");
+                }
+                System.IO.File.AppendAllText(Playlistpath, songPath);
+            }
+        }
+
         private void Home_Click(object sender, RoutedEventArgs e)
         {
             NonePlaylist();
@@ -1114,8 +1290,9 @@ namespace MP3_Final
             foreach (var item in list)
             {
                 System.Windows.Controls.Button button = item as System.Windows.Controls.Button;
-                button.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#02be68");
-                button.Foreground = Brushes.Black;
+                //button.Style = System.Windows.Application.Current.TryFindResource("albumButton") as Style;
+                button.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("Transparent");
+                //button.Foreground = Brushes.Black;
             }
         }
 
@@ -1132,7 +1309,8 @@ namespace MP3_Final
                 PlayerBorder.Background = this.FindResource("BlackBgrPlayer") as LinearGradientBrush;
                 BorderPopupMoreOption.Background = this.FindResource("BlackBgrMenu") as LinearGradientBrush;
                 singerTxtBlock.Foreground = (Brush)new BrushConverter().ConvertFrom("#6e6e6e");
-
+                plViewUC.border.Background = this.FindResource("BlackBgrCenter") as LinearGradientBrush; 
+                slrViewUC.border.Background = this.FindResource("BlackBgrCenter") as LinearGradientBrush;
             }
             else
             {
@@ -1145,8 +1323,8 @@ namespace MP3_Final
                 PlayerBorder.Background = this.FindResource("greenBgr2") as LinearGradientBrush;
                 BorderPopupMoreOption.Background = this.FindResource("greenBgr1") as LinearGradientBrush;
                 singerTxtBlock.Foreground = (Brush)new BrushConverter().ConvertFrom("#9ae5c3");
-
-
+                plViewUC.border.Background = this.FindResource("greenBgr1") as LinearGradientBrush;
+                slrViewUC.border.Background = this.FindResource("greenBgr1") as LinearGradientBrush;
             }
         }
     }

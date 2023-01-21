@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MP3_Final"
         mc:Ignorable="d"
         Title="AddToPlayList" Height="615" Width="245" WindowStartupLocation="CenterScreen">
-    <Grid>
+    <Grid Background="{DynamicResource greenBgr1}">
         <StackPanel x:Name="listPlayList">
             
         </StackPanel>

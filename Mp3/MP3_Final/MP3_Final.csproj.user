@@ -13,13 +13,16 @@
     <Compile Update="ChangeAlbumName.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="UserControl1.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="UserControls\EditPlaylistButton.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="UserControls\PlaylistCard.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="UserControls\SongName.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\PlaylistViews.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\songLyricView.xaml.cs">
@@ -39,13 +42,16 @@
     <Page Update="MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="UserControl1.xaml">
-      <SubType>Designer</SubType>
-    </Page>
     <Page Update="UserControls\EditPlaylistButton.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="UserControls\PlaylistCard.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="UserControls\SongName.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\PlaylistViews.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\songLyricView.xaml">
