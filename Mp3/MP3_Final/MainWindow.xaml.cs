@@ -57,17 +57,15 @@ namespace MP3_Final
         public static string head = Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + @"\PlayList\";
         string fav = head + @"Favorite.txt";
         string history = head + @"History.txt";
+        
         DispatcherTimer timer;
         bool shuffleMedia = false;
-
         //
         public static string headCard = Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + @"\LocalFiles\";
         string localfilesPath = headCard + "Local Files.txt";
         PlaylistsView plViewUC = new PlaylistsView();
         songLyricView slrViewUC = new songLyricView();
         //
-
-        
         public MainWindow()
         {
             InitializeComponent();
@@ -978,6 +976,7 @@ namespace MP3_Final
                 //Grid.SetRowSpan(a, 4);
             }
             catch { }
+
         }
 
         private void CloseLyric(object sender)
