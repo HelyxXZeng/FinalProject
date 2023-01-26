@@ -61,7 +61,7 @@
                         <materialDesign:PackIcon Kind="Spotify" Margin="10 0 0 0" Width="50" Height="50" VerticalAlignment="Center" Foreground="{StaticResource color2}"/>
                         <TextBlock Text="Music Player" Margin="10 0 0 0" VerticalAlignment="Center" FontSize="25" Foreground="{StaticResource color2}"/>
                     </StackPanel>
-                    <Button x:Name="Playlist" Style="{StaticResource menuButton}" Grid.Row="1">
+                    <Button x:Name="Home" Style="{StaticResource menuButton}" Grid.Row="1" Click="Home_Click">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="HomeVariant" Style="{StaticResource menuButtonIcon}"/>
                             <TextBlock Text="Home" Style="{StaticResource menuButtonTitle}"/>
@@ -166,10 +166,10 @@
 
                     </Popup>
 
-                    <Button Click="CreateAlbumClick" Style="{StaticResource menuButton}"  Grid.Row="6" >
+                    <Button Click="DisplayPlaylists" Style="{StaticResource menuButton}"  Grid.Row="6" >
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="PlaylistMusic" Style="{StaticResource menuButtonIcon}"/>
-                            <TextBlock Text="Your Playlists" Style="{StaticResource menuButtonTitle}"/>
+                            <TextBlock Text="Your Library" Style="{StaticResource menuButtonTitle}"/>
                         </StackPanel>
                     </Button>
 
@@ -303,9 +303,9 @@
                         </Grid>
 
                         <!--Songs List-->
-                        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" 
+                        <ScrollViewer Grid.Column="1" Margin="0 0 5 0" VerticalScrollBarVisibility="Auto" 
                                                                     HorizontalScrollBarVisibility="Disabled">
-                            <StackPanel Name="songMenu" Margin="0 0 10 0">
+                            <StackPanel Name="songMenu" Margin="0 0 5 0">
                                 <!--Danh sách bài hát-->
                             </StackPanel>
                         </ScrollViewer>

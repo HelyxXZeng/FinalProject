@@ -29,7 +29,9 @@ using static System.Net.WebRequestMethods;
 using static System.Windows.Forms.LinkLabel;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
+using File = System.IO.File;
 using MessageBox = System.Windows.MessageBox;
+using Path = System.IO.Path;
 
 namespace MP3_Final
 {
@@ -40,30 +42,32 @@ namespace MP3_Final
     {
         MediaPlayer media = new MediaPlayer();
         string fileName = string.Empty, path = string.Empty;
+
         List<Song> songs = new List<Song>();
         // dùng cho shuffle
         List<Song> subSongs = new List<Song>();
+        // dùng cho search
         List<Song> search = new List<Song>();
-        string current;
-        int i = 0;// bien toan cuc chi vi tri bai hat trong playlist
+        
+        string current; // bài hát đang được phát
+        public static string currentPlaylist = string.Empty;
+
+        int i = 0; // bien toan cuc chi vi tri bai hat trong playlist
         public static string tail = @".txt";
         public static string head = Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + @"\PlayList\";
         string fav = head + @"Favorite.txt";
         string history = head + @"History.txt";
-        public static string currentPlaylist = string.Empty;
-
         DispatcherTimer timer;
         bool shuffleMedia = false;
-        public class Song
-        {
-            public bool favor = false;
-            public string path;
-            public Song(string x, bool foo)
-            {
-                path = x;
-                favor = foo;
-            }
-        }
+
+        //
+        public static string headCard = Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + @"\LocalFiles\";
+        string localfilesPath = headCard + "Local Files.txt";
+        PlaylistsView plViewUC = new PlaylistsView();
+        songLyricView slrViewUC = new songLyricView();
+        //
+
+        
         public MainWindow()
         {
             InitializeComponent();
@@ -80,8 +84,16 @@ namespace MP3_Final
                 using (System.IO.File.Create(history)) ;
             }
 
-            LoadPlayList(head);
+            if (!System.IO.File.Exists(localfilesPath))
+            {
+                using (System.IO.File.Create(localfilesPath)) ;
+            }
 
+            LoadPlayList(head);
+            //
+            LoadPlaylistUC(headCard);
+            LoadPlaylistUC(head);
+            //
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(500);
             timer.Tick += Timer_Tick;
@@ -90,6 +102,7 @@ namespace MP3_Final
             media.MediaEnded += Media_Ended;// them event chay bai tiep theo
         }
 
+        // khi kết thúc bài hát
         bool repeatMedia = false;
         private void Media_MediaEnded(object? sender, EventArgs e)
         {
@@ -109,14 +122,11 @@ namespace MP3_Final
                 s.Begin();
             }
         }
+
+        // load info bài hát lên display
         private void Coverload()
         {
-            //TagLib.File file = TagLib.File.Create(songs[i].path);
             TagLib.File file;
-            //if (!shuffleMedia)
-            //    file = TagLib.File.Create(songs[i].path);
-            //else
-            //    file = TagLib.File.Create(subSongs[i].path);
             file = TagLib.File.Create(current);
             var firstp = file.Tag.Pictures.FirstOrDefault();
             if (firstp != null)
@@ -136,11 +146,23 @@ namespace MP3_Final
                     staticImage.ImageSource = bitmap; // load hinh len anh nho 
                 }
             }
-            string title = "Tên bài hát:" + file.Tag.Title, album = "Album: " + file.Tag.Album, date = "Năm ra mắt: " + ((file.Tag.Year == 0) ? "" : file.Tag.Year.ToString()),
+            else
+            {
+                staticImage.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/Images/m2.png"));
+                img.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/Images/m2.png"));
+            }
+            string tbh = "";
+            if (file.Tag.Title == "" || file.Tag.Title == null)
+            {
+                string[] temp = file.Name.Split("\\");
+                tbh = temp[temp.Length - 1].Split(".")[0];
+            }
+            else tbh = file.Tag.Title;
+            string title = "Tên bài hát:" + tbh, album = "Album: " + file.Tag.Album, date = "Năm ra mắt: " + ((file.Tag.Year == 0) ? "" : file.Tag.Year.ToString()),
                 kbit = "Bitrate: " + file.Properties.AudioBitrate.ToString() + "kbps";
             string[] artist = file.Tag.Performers, gerne = file.Tag.Genres;
             // infortexblock at sliderbar section
-            titleTxtBlock.Text = file.Tag.Title;
+            titleTxtBlock.Text = tbh;
             singerTxtBlock.Text = "";
             for (int i = 0; i < artist.Count(); i++)
             {
@@ -161,9 +183,9 @@ namespace MP3_Final
                 if (i > 0 && i < gerne.Count() - 1) infotextblock.Text += ",";
             }
             infotextblock.Text += "\n" + kbit;
-            //string lyric = "Lyrics" + file.Tag.Lyrics;
-            //infotextblock.Text += "\n" + lyric;
         }
+
+        // khi bài hát được mở
         private void Media_MediaOpened(object? sender, EventArgs e)
         {
             ActiveSongName(i);
@@ -175,11 +197,6 @@ namespace MP3_Final
             Coverload();
             Storyboard s = (Storyboard)pausebtn.FindResource("spinellipse");
             s.Begin();
-            //if (songs[i].favor)
-            //{
-            //    heartbtn.Foreground = Brushes.DeepPink;
-            //}
-            //else heartbtn.Foreground = Brushes.White;
             string[] files = System.IO.File.ReadAllLines(fav);
             foreach (string file in files)
             {
@@ -192,11 +209,14 @@ namespace MP3_Final
             heartbtn.Foreground = Brushes.White;
         }
 
+        // timer cho bài hát
         private void Timer_Tick(object? sender, EventArgs e)
         {
             slider_seek.Value = media.Position.TotalSeconds;
             tbStart.Text = string.Format("{0}", media.Position.ToString(@"mm\:ss"));
         }
+
+        // function khi bấm yêu thích
         private void heartbtn_Click(object sender, RoutedEventArgs e)
         {
             if (heartbtn.Foreground == Brushes.White)
@@ -205,18 +225,9 @@ namespace MP3_Final
             }
             else System.IO.File.WriteAllLines(fav, System.IO.File.ReadLines(fav).Where(l => l != songs[i].path).ToList());
             heartbtn.Foreground = (heartbtn.Foreground != Brushes.DeepPink) ? Brushes.DeepPink : Brushes.White;
-            //if (!songs[i].favor)
-            //{
-            //    System.IO.File.AppendAllText(fav, songs[i].path + "\n");
-            //    songs[i].favor = true;
-            //}
-            //else
-            //{
-            //    songs[i].favor = false;
-            //    System.IO.File.WriteAllLines(fav, System.IO.File.ReadLines(fav).Where(l => l != songs[i].path).ToList());
-            //}
         }
 
+        // dừng bài hát
         private void pausebtn_Click(object sender, RoutedEventArgs e)
         {
             if (media.Source != null)
@@ -237,6 +248,7 @@ namespace MP3_Final
                 }
             }
         }
+
         // add songname to playlist table
         private void Add_UcSongName(Song song, int index)
         {
@@ -249,7 +261,15 @@ namespace MP3_Final
                 uc.Number = '0' + temp.ToString();
             else
                 uc.Number = temp.ToString();
-            uc.Title = file.Tag.Title;
+            //code fix title begin
+            string tbh = "";
+            if (file.Tag.Title == "" || file.Tag.Title == null)
+            {
+                tbh = System.IO.Path.GetFileNameWithoutExtension(file.Name);
+            }
+            else tbh = file.Tag.Title;
+            uc.Title = tbh;
+            // code fix title end 
             string[] artist = file.Tag.Performers;
             string listSinger = "";
             for (int i = 0; i < artist.Count(); i++)
@@ -266,7 +286,7 @@ namespace MP3_Final
             uc.DeleteClick += new Action<object>(OnDelete);
         }
 
-        // Xử lý button delete ở popup
+        // ấn delete ở popup
         private void OnDelete(object sender)
         {
             SongName uc = (SongName)sender;
@@ -288,7 +308,6 @@ namespace MP3_Final
                 }
 
             }
-
             for (int i = 0; i < subSongs.Count; i++)
             {
                 if (subSongs[i].path == uc.Path)
@@ -389,80 +408,8 @@ namespace MP3_Final
                     remainUc.IsActive = false;
             }
         }
-        private void FileUpload_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            var dialog = new Microsoft.Win32.OpenFileDialog();
-            // code open 1 file
-            dialog.Multiselect = false;
-            dialog.DefaultExt = ".mp3,.flac,.ogg,.wav"; // Default file extension
-            dialog.Filter = "All Media Files|*.wav;*.flac;*.aac;*.wma;*.wmv;*.avi;*.mpg;*.mpeg;*.m1v;*.mp2;*.mp3;*.mpa;*.mpe;*.m3u;*.mp4;*.mov;*.3g2;*.3gp2;*.3gp;*.3gpp;*.m4a;*.cda;*.aif;*.aifc;*.aiff;*.mid;*.midi;*.rmi;*.mkv;*.WAV;*.AAC;*.WMA;*.WMV;*.AVI;*.MPG;*.MPEG;*.M1V;*.MP2;*.MP3;*.MPA;*.MPE;*.M3U;*.MP4;*.MOV;*.3G2;*.3GP2;*.3GP;*.3GPP;*.M4A;*.CDA;*.AIF;*.AIFC;*.AIFF;*.MID;*.MIDI;*.RMI;*.MKV"; // Filter files by extension 
 
-            // ket qua cua dialog
-            if (dialog.ShowDialog() == false)
-            {
-                return;
-            }
-            string line;
-            bool heart = false;
-            StreamReader reader = new StreamReader(fav);
-            while ((line = reader.ReadLine()) != null)
-            {
-                if (line == dialog.FileName)
-                {
-                    heart = true;
-                    break;
-                }
-            }
-            reader.Close();
-            Song song = new Song(dialog.FileName, heart);
-            songs.Add(song);
-            subSongs.Add(song);
-            i = songs.Count - 1;
-            //fileName = dialog.FileName;
-            //Coverload();
-            //code duoi la chay nhac    
-            //media.Open(new Uri(fileName));
-            Add_UcSongName(songs[i], i);
-            //media.Play();
-        }
-
-        private void FolderUpload_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
-            {
-                dialog.RootFolder = Environment.SpecialFolder.MyDocuments;//
-                System.Windows.Forms.DialogResult result = dialog.ShowDialog();
-                if (result == System.Windows.Forms.DialogResult.Cancel) return;// thoat va khong thuc hien doan code duoi
-                path = dialog.SelectedPath;
-                /*FileInfo[] file = new DirectoryInfo(path).GetFiles("*.mp3");*/
-                var fileInfos = new DirectoryInfo(path).GetFilesByExtentions(".wav", ".flac", ".aac", ".wma", ".wmv", ".avi", ".mpg", ".mpeg", ".m1v", ".mp2", ".mp3", ".mpa", ".mpe", ".m3u", ".mp4", ".mov", ".3g2", ".3gp2", ".3gp", ".3gpp", ".m4a", ".cda", ".aif", ".aifc", ".aiff", ".mid", ".midi", ".rmi", ".mkv", ".WAV", ".AAC", ".WMA", ".WMV", ".AVI", ".MPG", ".MPEG", ".M1V", ".MP2", ".MP3", ".MPA", ".MPE", ".M3U", ".MP4", ".MOV", ".3G2", ".3GP2", ".3GP", ".3GPP", ".M4A", ".CDA", ".AIF", ".AIFC", ".AIFF", ".MID", ".MIDI", ".RMI", ".MKV");
-
-                string line;
-                bool heart = false;
-                foreach (FileInfo fil in fileInfos)
-                {
-                    StreamReader reader = new StreamReader(fav);
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        if (line == fil.FullName)
-                        {
-                            heart = true;
-                            break;
-                        }
-                    }
-                    reader.Close();
-                    Song song = new Song(fil.FullName, heart);
-                    heart = false;
-                    songs.Add(song);
-                    subSongs.Add(song);
-                    int index = songs.Count - 1;
-                    Add_UcSongName(songs[index], index);
-                }
-            }
-            //fileName = songs[i].path;
-            //media.Open(new Uri(fileName));
-            //media.Play();
-        }
+        // Song ended
         private void Media_Ended(object sender, EventArgs e)
         {
             i++;
@@ -495,17 +442,20 @@ namespace MP3_Final
             media.Play();
         }
 
+        // replay button press
         private void replaybtn_Click(object sender, RoutedEventArgs e)
         {
             replaybtn.Foreground = (replaybtn.Foreground != Brushes.DeepPink) ? Brushes.DeepPink : Brushes.White;
             repeatMedia = (repeatMedia == false && replaybtn.Foreground == Brushes.DeepPink) ? true : false;
         }
 
+        // media time slider change
         private void slider_seek_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             media.Position = TimeSpan.FromSeconds(slider_seek.Value);
         }
 
+        // volumn button click for media mute
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (sldVolume.Value == 0)
@@ -519,11 +469,13 @@ namespace MP3_Final
             }
         }
 
+        // volumn slider change
         private void sldVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             media.Volume = sldVolume.Value;
         }
 
+        // next button click
         private void nextbtn_Click(object sender, RoutedEventArgs e)
         {
             if (onSearch && playSearch)
@@ -553,12 +505,15 @@ namespace MP3_Final
                 current = subSongs[i].path;
                 media.Open(new Uri(subSongs[i].path));
             }
+            getLyric(slrViewUC, current);
             media.Position = TimeSpan.Zero;// chay nhac tu 00:00
             media.Play();
         }
 
+        // favorite button on the left section
         private void Favorite_Click(object sender, RoutedEventArgs e)
         {
+            NonePlaylist();
             onSearch = false;
             playSearch = false;
             StreamReader reader = new StreamReader(fav);
@@ -571,45 +526,15 @@ namespace MP3_Final
                 songs.Add(song);
             }
             reader.Close();
-            if (songs.Count == 0) { return; }
             songMenu.Children.Clear();
+            if (songs.Count == 0) { return; }
             for (int i = 0; i < songs.Count; i++)
             {
                 Add_UcSongName(songs[i], i);
             }
-            //if (pausebtn.Content == pausebtn.FindResource("Play"))
-            //{
-            //    pausebtn.Content = pausebtn.FindResource("Pause");
-            //    Storyboard s = (Storyboard)pausebtn.FindResource("spinellipse");
-            //    s.Begin();
-            //    media.Play();
-            //}
-            //fileName = songs[i].path;
-            //media.Open(new Uri(fileName));
-            //media.Play();
         }
 
-        private UserControl1 activeUI = null;
-        private void CreateAlbumClick(object sender, RoutedEventArgs e)
-        {
-            if (activeUI != null) Music_Player.Children.Remove(activeUI);
-            UserControl1 a = new UserControl1();
-            activeUI = a;
-            a.Close += new Action<object>(OnClose);
-            Grid.SetColumn(a, 1);
-
-            Grid.SetColumnSpan(a, 2);
-
-            Music_Player.Children.Add(a);
-            //Grid.SetRow(a, 0);
-            //Grid.SetRowSpan(a, 4);
-        }
-
-        private void OnClose(object sender)
-        {
-            Music_Player.Children.Remove((UserControl1)sender);
-        }
-
+        // playlist click on the left section
         private void PlayListClick(object sender, RoutedEventArgs e)
         {
             onSearch = false;
@@ -617,9 +542,26 @@ namespace MP3_Final
             System.Windows.Controls.Button button = sender as System.Windows.Controls.Button;
             string path = head + button.Content.ToString() + tail;
             currentPlaylist = button.Tag.ToString();
+            ChangeColorClickPlayList();
             OpenPlayList(path);
         }
 
+        // highlight the selected playlist
+        void ChangeColorClickPlayList()
+        {
+            var list = listMenu.Children;
+            foreach (var item in list)
+            {
+                System.Windows.Controls.Button button = item as System.Windows.Controls.Button;
+                button.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("Transparent");
+                if (button.Tag == currentPlaylist)
+                {
+                    button.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#1aab7a");
+                }
+            }
+        }
+
+        // function to open clicked playlist
         void OpenPlayList(string path)
         {
             if (!System.IO.File.Exists(path))
@@ -654,6 +596,7 @@ namespace MP3_Final
             }
         }
 
+        // create playlist button on the left section
         private void AddPlayList(object sender, RoutedEventArgs e)
         {
             System.Windows.Controls.Button button = new System.Windows.Controls.Button();
@@ -674,6 +617,7 @@ namespace MP3_Final
             }
         }
 
+        // load all created playlists to the left section
         void LoadPlayList(string path)
         {
             string[] files = Directory.GetFiles(path);
@@ -693,6 +637,7 @@ namespace MP3_Final
             }
         }
 
+        // get the media files' name
         public static string GetFileNameOnly(string fullName)
         {
             string res = "";
@@ -707,6 +652,7 @@ namespace MP3_Final
             return res;
         }
 
+        // previous button
         private void previousbtn_Click(object sender, RoutedEventArgs e)
         {
             if (onSearch && playSearch)
@@ -716,7 +662,7 @@ namespace MP3_Final
                 else i = 0;
                 media.Stop();
                 media.Open(new Uri(search[i].path));
-                media.Position = TimeSpan.Zero;// chay nhac tu 00:00
+                media.Position = TimeSpan.Zero; // chay nhac tu 00:00
                 media.Play();
                 return;
             }
@@ -726,18 +672,27 @@ namespace MP3_Final
             else i = songs.Count - 1;
             media.Stop();
             if (!shuffleMedia)
+            {
+                current = songs[i].path;
                 media.Open(new Uri(songs[i].path));
+            }
             else
+            {
+                current = subSongs[i].path;
                 media.Open(new Uri(subSongs[i].path));
-            media.Position = TimeSpan.Zero;// chay nhac tu 00:00
+            }
+            getLyric(slrViewUC, current);
+            media.Position = TimeSpan.Zero; // chay nhac tu 00:00
             media.Play();
         }
 
+        // shuffle function
         private void shufflebtn_Click(object sender, RoutedEventArgs e)
         {
             shufflebtn.Foreground = (shufflebtn.Foreground != Brushes.DeepPink) ? Brushes.DeepPink : Brushes.White;
             shuffleMedia = (shuffleMedia == false && shufflebtn.Foreground == Brushes.DeepPink) ? true : false;
-            i = 0;
+            SongName thisSong = (SongName)songMenu.Children[i];
+            i = thisSong.IndexOfSong;
 
             if (shuffleMedia)
             {
@@ -747,16 +702,10 @@ namespace MP3_Final
                     subSongs.Add(song);
                 }
                 subSongs.Shuffle();
-                //songMenu.Children.Clear();
-                //for (int i = 0; i < subSongs.Count; i++)
-                //{
-                //    Add_UcSongName(subSongs[i], i);
-                //}
-                //songs.Shuffle();
                 for (int i = 0; i < songMenu.Children.Count; i++)
                 {
                     SongName songname = (SongName)songMenu.Children[i];
-                    for (int j = 0; j < songs.Count; j++)
+                    for (int j = 0; j < subSongs.Count; j++)
                     {
                         if (songname.Path == subSongs[j].path)
                         {
@@ -768,36 +717,18 @@ namespace MP3_Final
             }
             else
             {
-                songMenu.Children.Clear();
-                for (int i = 0; i < songs.Count; i++)
+                for (int i = 0; i < songMenu.Children.Count; i++)
                 {
-                    Add_UcSongName(songs[i], i);
+                    SongName songname = (SongName)songMenu.Children[i];
+                    for (int j = 0; j < songs.Count; j++)
+                    {
+                        if (songname.Path == songs[j].path)
+                        {
+                            songname.IndexOfSong = j;
+                            break;
+                        }
+                    }
                 }
-                //string currentSongPath = songs[i].path;
-
-                //for (int i = 0; i < songMenu.Children.Count; i++)
-                //{
-                //    SongName songname = (SongName)songMenu.Children[i];
-                //    for (int j = 0; j < subSongs.Count; j++)
-                //    {
-                //        if (songname.Path == subSongs[j].path)
-                //        {
-                //            songname.IndexOfSong = j;
-                //            break;
-                //        }
-                //    }
-                //}
-                //for (int n = 0; n < songMenu.Children.Count; n++)
-                //{
-                //    SongName songname = (SongName)songMenu.Children[n];
-                //    if (songname.IsActive)
-                //        i = songname.IndexOfSong;
-                //}
-
-                //media.Stop();
-                //media.Open(new Uri(songs[i].path));
-                //media.Position = TimeSpan.Zero;// chay nhac tu 00:00
-                //media.Play();
             }
         }
 
@@ -875,9 +806,10 @@ namespace MP3_Final
 
             System.IO.File.AppendAllText(playlist, path);
         }
-        //real load file
+        // real load file
         private void LoadFileButton(object sender, RoutedEventArgs e)
         {
+            NonePlaylist();
             if (onSearch)
             {
                 songMenu.Children.Clear();
@@ -888,7 +820,7 @@ namespace MP3_Final
             // code open 1 file
             dialog.Multiselect = false;
             dialog.DefaultExt = ".mp3,.flac,.ogg,.wav"; // Default file extension
-            dialog.Filter = "All Media Files|*.wav;*.flac;*.aac;*.wma;*.wmv;*.avi;*.mpg;*.mpeg;*.m1v;*.mp2;*.mp3;*.mpa;*.mpe;*.m3u;*.mp4;*.mov;*.3g2;*.3gp2;*.3gp;*.3gpp;*.m4a;*.cda;*.aif;*.aifc;*.aiff;*.mid;*.midi;*.rmi;*.mkv;*.WAV;*.AAC;*.WMA;*.WMV;*.AVI;*.MPG;*.MPEG;*.M1V;*.MP2;*.MP3;*.MPA;*.MPE;*.M3U;*.MP4;*.MOV;*.3G2;*.3GP2;*.3GP;*.3GPP;*.M4A;*.CDA;*.AIF;*.AIFC;*.AIFF;*.MID;*.MIDI;*.RMI;*.MKV"; // Filter files by extension 
+            dialog.Filter = "All Media Files|*.wav;*.flac;*.aac;*.wma;*.wmv;*.avi;*.m1v;*.mp2;*.mp3;*.mpa;*.mpe;*.m3u;*.mp4;*.mov;*.3g2;*.3gp2;*.3gp;*.3gpp;*.m4a;*.cda;*.aif;*.aifc;*.aiff;*.mid;*.midi;*.rmi;*.mkv;*.WAV;*.AAC;*.WMA;*.WMV;*.AVI;*.M1V;*.MP2;*.MP3;*.MPA;*.MPE;*.M3U;*.MP4;*.MOV;*.3G2;*.3GP2;*.3GP;*.3GPP;*.M4A;*.CDA;*.AIF;*.AIFC;*.AIFF;*.MID;*.MIDI;*.RMI;*.MKV"; // Filter files by extension 
 
             // ket qua cua dialog
             if (dialog.ShowDialog() == false)
@@ -921,11 +853,13 @@ namespace MP3_Final
             //code duoi la chay nhac    
             //media.Open(new Uri(fileName));
             Add_UcSongName(songs[i], i);
+            AddFile(localfilesPath, song.path);
             //media.Play();
         }
-        //real load folder
+        // real load folder
         private void LoadFolderButton(object sender, RoutedEventArgs e)
         {
+            NonePlaylist();
             if (onSearch)
             {
                 songMenu.Children.Clear();
@@ -939,7 +873,32 @@ namespace MP3_Final
                 if (result == System.Windows.Forms.DialogResult.Cancel) return;// thoat va khong thuc hien doan code duoi
                 path = dialog.SelectedPath;
                 /*FileInfo[] file = new DirectoryInfo(path).GetFiles("*.mp3");*/
-                var fileInfos = new DirectoryInfo(path).GetFilesByExtentions(".wav", ".flac", ".aac", ".wma", ".wmv", ".avi", ".mpg", ".mpeg", ".m1v", ".mp2", ".mp3", ".mpa", ".mpe", ".m3u", ".mp4", ".mov", ".3g2", ".3gp2", ".3gp", ".3gpp", ".m4a", ".cda", ".aif", ".aifc", ".aiff", ".mid", ".midi", ".rmi", ".mkv", ".WAV", ".AAC", ".WMA", ".WMV", ".AVI", ".MPG", ".MPEG", ".M1V", ".MP2", ".MP3", ".MPA", ".MPE", ".M3U", ".MP4", ".MOV", ".3G2", ".3GP2", ".3GP", ".3GPP", ".M4A", ".CDA", ".AIF", ".AIFC", ".AIFF", ".MID", ".MIDI", ".RMI", ".MKV");
+                var fileInfos = new DirectoryInfo(path).GetFilesByExtentions(".wav", ".flac", ".aac", ".wma", ".wmv", ".avi", ".m1v", ".mp2", ".mp3", ".mpa", ".mpe", ".m3u", ".mp4", ".mov", ".3g2", ".3gp2", ".3gp", ".3gpp", ".m4a", ".cda", ".aif", ".aifc", ".aiff", ".mid", ".midi", ".rmi", ".mkv", ".WAV", ".AAC", ".WMA", ".WMV", ".AVI", ".M1V", ".MP2", ".MP3", ".MPA", ".MPE", ".M3U", ".MP4", ".MOV", ".3G2", ".3GP2", ".3GP", ".3GPP", ".M4A", ".CDA", ".AIF", ".AIFC", ".AIFF", ".MID", ".MIDI", ".RMI", ".MKV");
+
+
+                //
+                string folderName = Path.GetFileName(path);
+                folderName = headCard + folderName + tail;
+                string[] folders = Directory.GetFiles(headCard);
+                bool dupCheck = false;
+                foreach (var fd in folders)
+                {
+                    if (fd == folderName)
+                    {
+                        dupCheck = true;
+                        break;
+                    }
+                }
+                if (!dupCheck)
+                {
+                    PlaylistCard plCard = new PlaylistCard();
+                    plCard.Title = GetFileNameOnly(System.IO.Path.GetFileName(folderName));
+                    plCard.ClickOpen += (sender, e) => OpenPlCard(sender, e, folderName);
+                    plViewUC.playlist.Children.Add(plCard);
+                    using (System.IO.File.Create(folderName)) ;
+                }
+                //
+
 
                 string line;
                 bool heart = false;
@@ -968,21 +927,18 @@ namespace MP3_Final
                     subSongs.Add(song);
                     int index = songs.Count - 1;
                     Add_UcSongName(songs[index], index);
+                    AddFile(folderName, song.path);
                 }
             }
         }
 
-
+        // get lyrics of the song
         songLyricView activeSlv = null;
-        private void DisplayLyric(object sender, RoutedEventArgs e)
+
+        private void getLyric(songLyricView slr, string path)
         {
-            songLyricView slviewUC = new songLyricView();
             TagLib.File file;
-            //if (!shuffleMedia)
-            //    file = TagLib.File.Create(songs[i].path);
-            //else
-            //    file = TagLib.File.Create(subSongs[i].path);
-            file = TagLib.File.Create(current);
+            file = TagLib.File.Create(path);
             var firstp = file.Tag.Pictures.FirstOrDefault();
             if (firstp != null)
             {
@@ -997,33 +953,47 @@ namespace MP3_Final
                     //memoryStream.Dispose();
                     bitmap.EndInit();
 
-                    slviewUC.PathImage = bitmap;
+                    slr.PathImage = bitmap;
                 }
             }
-            slviewUC.Lyric = file.Tag.Lyrics;
+            slr.Lyric = file.Tag.Lyrics;
+        }
 
-            if (activeSlv != null) centerUI.Children.Remove(activeSlv);
-            activeSlv = slviewUC;
-            slviewUC.Close += new Action<object>(CloseLyric);
-            Grid.SetColumn(slviewUC, 0);
+        // display lyrics
+        private void DisplayLyric(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                getLyric(slrViewUC, current);
 
-            Grid.SetColumnSpan(slviewUC, 2);
+                if (activeSlv != null) centerUI.Children.Remove(activeSlv);
+                activeSlv = slrViewUC;
+                slrViewUC.Close += new Action<object>(CloseLyric);
+                Grid.SetColumn(slrViewUC, 0);
 
-            centerUI.Children.Add(slviewUC);
-            //Grid.SetRow(a, 0);
-            //Grid.SetRowSpan(a, 4);
+                Grid.SetColumnSpan(slrViewUC, 2);
+
+                centerUI.Children.Add(slrViewUC);
+                //Grid.SetRow(a, 0);
+                //Grid.SetRowSpan(a, 4);
+            }
+            catch { }
         }
 
         private void CloseLyric(object sender)
         {
             centerUI.Children.Remove((songLyricView)sender);
         }
+
+        // this help search with or without Vietnamese
         public static string RemoveSign(string str)
         {
             Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
             string temp = str.Normalize(NormalizationForm.FormD);
             return regex.Replace(temp, String.Empty).Replace('\u0111', 'd').Replace('\u0110', 'D');
         }
+
+        // search function
         bool onSearch = false;
         bool playSearch = false;
         private void searchTB_TextChanged(object sender, TextChangedEventArgs e)
@@ -1080,6 +1050,131 @@ namespace MP3_Final
             }
         }
 
+
+        PlaylistsView active = null;
+
+        private void DisplayPlaylists(object sender, RoutedEventArgs e)
+        {
+            if (active != null) centerUI.Children.Remove(active);
+            active = plViewUC;
+            plViewUC.Close += new Action<object>(ClosePlaylistView);
+            Grid.SetColumn(plViewUC, 0);
+            Grid.SetColumnSpan(plViewUC, 2);
+            centerUI.Children.Add(plViewUC);
+            string[] files = Directory.GetFiles(head);
+
+            for (int i = 0; i < files.Length; i++)
+            {
+                string filepath = GetFileNameOnly(System.IO.Path.GetFileName(files[i]));
+                string[] lines = File.ReadAllLines(files[i]);
+                for (int j = 0; j < plViewUC.playlist.Children.Count; j++)
+                {
+                    PlaylistCard plCard = (PlaylistCard)plViewUC.playlist.Children[j];
+                    if (filepath == plCard.Title.ToString())
+                    {
+                        if (lines.Length == 0)
+                        {
+                            BitmapImage bitmap = new BitmapImage();
+                            bitmap.BeginInit();
+                            string urisource = Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + "/Images/m2.png";
+                            bitmap.UriSource = new Uri(urisource);
+                            bitmap.EndInit();
+                            plCard.PathImage = bitmap;
+                        }
+                        else
+                        {
+                            TagLib.File file = TagLib.File.Create(lines[0]);
+                            var firstp = file.Tag.Pictures.FirstOrDefault();
+                            if (firstp != null)
+                            {
+                                MemoryStream memoryStream = new MemoryStream(file.Tag.Pictures[0].Data.Data);
+                                memoryStream.Seek(0, SeekOrigin.Begin);
+                                if (file.Tag.Pictures != null && file.Tag.Pictures.Length != 0)
+                                {
+                                    //memoryStream.Write(pData, 0, Convert.ToInt32(pData.Length));
+                                    BitmapImage bitmap = new BitmapImage();
+                                    bitmap.BeginInit();
+                                    bitmap.StreamSource = memoryStream;
+                                    //memoryStream.Dispose();
+                                    bitmap.EndInit();
+
+                                    plCard.PathImage = bitmap;
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+        // Load playlists to left section
+        private void LoadPlaylistUC(string path)
+        {
+            string[] files = Directory.GetFiles(path);
+            if (System.IO.Path.GetFileName(path) == "LocalFiles")
+                plViewUC.playlist.Children.Clear();
+            foreach (var file in files)
+            {
+                PlaylistCard plCard = new PlaylistCard();
+                plCard.Title = GetFileNameOnly(System.IO.Path.GetFileName(file));
+                plViewUC.playlist.Children.Add(plCard);
+                plCard.ClickOpen += (sender, e) => OpenPlCard(sender, e, file);
+            }
+        }
+
+
+        private void OpenPlCard(object sender, RoutedEventArgs e, string Path)
+        {
+            OpenPlayList(Path);
+            ClosePlaylistView(plViewUC);
+        }
+
+        private void ClosePlaylistView(object sender)
+        {
+            centerUI.Children.Remove((PlaylistsView)sender);
+        }
+
+        // upload file function
+        private void AddFile(string Playlistpath, string songPath)
+        {
+            if (Playlistpath != null)
+            {
+                string[] files = System.IO.File.ReadAllLines(Playlistpath);
+                foreach (string file in files)
+                {
+                    if (songPath == file)
+                    {
+                        return;
+                    }
+                }
+
+                if (new FileInfo(Playlistpath).Length != 0)
+                {
+                    System.IO.File.AppendAllText(Playlistpath, "\n");
+                }
+                System.IO.File.AppendAllText(Playlistpath, songPath);
+            }
+        }
+        // Home button on the left section
+        private void Home_Click(object sender, RoutedEventArgs e)
+        {
+            NonePlaylist();
+            onSearch = false;
+            playSearch = false;
+            OpenPlayList(head + @"History" + tail);
+        }
+        // revert non-selected playlists
+        void NonePlaylist()
+        {
+            var list = listMenu.Children;
+            foreach (var item in list)
+            {
+                System.Windows.Controls.Button button = item as System.Windows.Controls.Button;
+                button.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("Transparent");
+            }
+        }
+
         private void darkmodeBtn_Click(object sender, RoutedEventArgs e)
         {
             if (darkmodeBtn.Content == darkmodeBtn.FindResource("Light"))
@@ -1093,7 +1188,8 @@ namespace MP3_Final
                 PlayerBorder.Background = this.FindResource("BlackBgrPlayer") as LinearGradientBrush;
                 BorderPopupMoreOption.Background = this.FindResource("BlackBgrMenu") as LinearGradientBrush;
                 singerTxtBlock.Foreground = (Brush)new BrushConverter().ConvertFrom("#6e6e6e");
-
+                plViewUC.border.Background = this.FindResource("BlackBgrCenter") as LinearGradientBrush; 
+                slrViewUC.border.Background = this.FindResource("BlackBgrCenter") as LinearGradientBrush;
             }
             else
             {
@@ -1106,36 +1202,8 @@ namespace MP3_Final
                 PlayerBorder.Background = this.FindResource("greenBgr2") as LinearGradientBrush;
                 BorderPopupMoreOption.Background = this.FindResource("greenBgr1") as LinearGradientBrush;
                 singerTxtBlock.Foreground = (Brush)new BrushConverter().ConvertFrom("#9ae5c3");
-
-
-            }
-        }
-    }
-    public static class Linqhelper /* class extention */
-    {
-        /*
-         * Muc dich: them 1 ham de get file extention. Dung cho load folder
-         */
-        public static IEnumerable<FileInfo> GetFilesByExtentions(this DirectoryInfo dir, params string[] exts) /* https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/params */
-        {
-            if (exts == null)
-                throw new ArgumentNullException("extensions");
-            IEnumerable<FileInfo> files = dir.EnumerateFiles();
-            return files.Where(f => exts.Contains(f.Extension));/*=> la 1 lambda expressions. Xem them tai https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions */
-        }
-        // make a shuffle funct for playlist
-        private static Random rng = new Random();
-
-        public static void Shuffle<T>(this List<T> list)
-        {
-            int n = list.Count;
-            while (n > 1)
-            {
-                n--;
-                int k = rng.Next(n + 1);
-                T value = list[k];
-                list[k] = list[n];
-                list[n] = value;
+                plViewUC.border.Background = this.FindResource("greenBgr1") as LinearGradientBrush;
+                slrViewUC.border.Background = this.FindResource("greenBgr1") as LinearGradientBrush;
             }
         }
     }
