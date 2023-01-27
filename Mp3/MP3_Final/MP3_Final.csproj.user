@@ -25,9 +25,6 @@
     <Compile Update="UserControls\SongName.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\AboutusUI.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="Views\PlaylistViews.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -58,9 +55,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="UserControls\SongName.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\AboutusUI.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\PlaylistViews.xaml">
