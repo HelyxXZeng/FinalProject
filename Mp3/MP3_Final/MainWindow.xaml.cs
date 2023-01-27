@@ -712,6 +712,18 @@ namespace MP3_Final
             }
             else
             {
+                for (int i = 0; i < songMenu.Children.Count; i++)
+                {
+                    SongName songname = (SongName)songMenu.Children[i];
+                    for (int j = 0; j < songs.Count; j++)
+                    {
+                        if (songname.Path == songs[j].path)
+                        {
+                            songname.IndexOfSong = j;
+                            break;
+                        }
+                    }
+                }
                 for (int n = 0; n < songMenu.Children.Count; n++)
                 {
                     SongName songname = (SongName)songMenu.Children[n];
