@@ -91,18 +91,7 @@ namespace MP3_Final
                 using (System.IO.File.Create(localfilesPath)) ;
             }
             //
-            string[] files = Directory.GetFiles(head);
-            string[] lines = System.IO.File.ReadAllLines(history);
-            foreach (var line in lines)
-            {
-                if (!System.IO.File.Exists(line))
-                {
-                    foreach (var file in files)
-                    {
-                        File.WriteAllLines(file, File.ReadLines(file).Where(l => l != line).ToList());
-                    }
-                }
-            }
+            CheckSong();
             //
             LoadPlayList(head);
             //
@@ -115,6 +104,22 @@ namespace MP3_Final
             media.MediaOpened += Media_MediaOpened;
             media.MediaEnded += Media_MediaEnded;
             media.MediaEnded += Media_Ended;// them event chay bai tiep theo
+        }
+
+        public void CheckSong()
+        {
+            string[] files = Directory.GetFiles(head);
+            string[] lines = System.IO.File.ReadAllLines(history);
+            foreach (var line in lines)
+            {
+                if (!System.IO.File.Exists(line))
+                {
+                    foreach (var file in files)
+                    {
+                        File.WriteAllLines(file, File.ReadLines(file).Where(l => l != line).ToList());
+                    }
+                }
+            }
         }
 
         // khi kết thúc bài hát
@@ -1165,6 +1170,7 @@ namespace MP3_Final
         // Home button on the left section
         private void Home_Click(object sender, RoutedEventArgs e)
         {
+            CheckSong();
             NonePlaylist();
             onSearch = false;
             playSearch = false;
