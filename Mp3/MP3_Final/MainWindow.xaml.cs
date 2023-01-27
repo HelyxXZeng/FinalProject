@@ -44,6 +44,8 @@ namespace MP3_Final
         string fileName = string.Empty, path = string.Empty;
 
         List<Song> songs = new List<Song>();
+        // new shuffle
+        List<int> shufflesongs = new List<int>();
         // dùng cho shuffle
         List<Song> subSongs = new List<Song>();
         // dùng cho search
@@ -88,7 +90,20 @@ namespace MP3_Final
             {
                 using (System.IO.File.Create(localfilesPath)) ;
             }
-
+            //
+            string[] files = Directory.GetFiles(head);
+            string[] lines = System.IO.File.ReadAllLines(history);
+            foreach (var line in lines)
+            {
+                if (!System.IO.File.Exists(line))
+                {
+                    foreach (var file in files)
+                    {
+                        File.WriteAllLines(file, File.ReadLines(file).Where(l => l != line).ToList());
+                    }
+                }
+            }
+            //
             LoadPlayList(head);
             //
             LoadPlaylistUC(headCard);
@@ -304,7 +319,6 @@ namespace MP3_Final
                     songs.RemoveAt(i);
                     break;
                 }
-
             }
             for (int i = 0; i < subSongs.Count; i++)
             {
