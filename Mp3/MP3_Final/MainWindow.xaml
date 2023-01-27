@@ -299,7 +299,9 @@
                             </Ellipse>
 
                             <!--Thông tin bài hát-->
-                            <TextBlock Margin="10 0 0 0" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="1"  x:Name="infotextblock" Text="THÔNG TIN BÀI HÁT" TextWrapping="Wrap" Foreground="White" FontSize="16" FontWeight="Bold" />
+                            <TextBlock Margin="10 0 0 0" HorizontalAlignment="Center" VerticalAlignment="Top" 
+                                       Grid.Row="1"  x:Name="infotextblock" Text="SONG'S INFORMATION" 
+                                       TextWrapping="Wrap" Foreground="White" FontSize="16" FontWeight="Bold" />
                         </Grid>
 
                         <!--Songs List-->

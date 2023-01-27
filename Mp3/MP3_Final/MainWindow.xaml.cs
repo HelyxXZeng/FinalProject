@@ -176,7 +176,7 @@ namespace MP3_Final
                 tbh = temp[temp.Length - 1].Split(".")[0];
             }
             else tbh = file.Tag.Title;
-            string title = "Tên bài hát:" + tbh, album = "Album: " + file.Tag.Album, date = "Năm ra mắt: " + ((file.Tag.Year == 0) ? "" : file.Tag.Year.ToString()),
+            string title = "Name: " + tbh, album = "Album: " + file.Tag.Album, date = "Release date: " + ((file.Tag.Year == 0) ? "" : file.Tag.Year.ToString()),
                 kbit = "Bitrate: " + file.Properties.AudioBitrate.ToString() + "kbps";
             string[] artist = file.Tag.Performers, gerne = file.Tag.Genres;
             // infortexblock at sliderbar section
@@ -188,13 +188,13 @@ namespace MP3_Final
                 if (i > 0 && i < artist.Count() - 1) infotextblock.Text += ",";
             }
             // infortextblock at left section 
-            infotextblock.Text = title + "\n" + album + "\nCa sĩ: ";
+            infotextblock.Text = title + "\n" + album + "\nSinger: ";
             for (int i = 0; i < artist.Count(); i++)
             {
                 infotextblock.Text += artist[i];
                 if (i > 0 && i < artist.Count() - 1) infotextblock.Text += ",";
             }
-            infotextblock.Text += "\nThể loại: ";
+            infotextblock.Text += "\nMusic genres: ";
             for (int i = 0; i < gerne.Count(); i++)
             {
                 infotextblock.Text += gerne[i];

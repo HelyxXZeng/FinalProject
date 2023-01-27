@@ -103,7 +103,7 @@ namespace MP3_Final.UserControls
                 {
                     if (Path == file)
                     {
-                        MessageBox.Show("Thêm thành công!");
+                        MessageBox.Show("Added successfully!");
                         return;
                     }
                 }
@@ -114,7 +114,7 @@ namespace MP3_Final.UserControls
                 }
 
                 File.AppendAllText(playList, Path);
-                MessageBox.Show("Thêm thành công!");
+                MessageBox.Show("Added successfully!");
             }
         }
 
