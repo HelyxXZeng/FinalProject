@@ -1,0 +1,28 @@
+﻿<UserControl x:Class="MP3_Final.Views.AboutusUI"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MP3_Final.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="500">
+    <Border x:Name="border" Height="auto">
+        <Border.Background>
+            <DynamicResource ResourceKey="color3"/>
+        </Border.Background>
+        <StackPanel>
+            <TextBlock Margin="20" Text="Đồ án Lập trình trực quan" TextWrapping="Wrap" FontWeight="Bold" Foreground="White" FontSize="35" HorizontalAlignment="Center"/>
+            <TextBlock Margin="20 0 0 0" Text="Giáo viên hướng dẫn Nguyễn Tấn Toàn" TextWrapping="Wrap" FontWeight="Bold" Foreground="White" FontSize="25" />
+            <TextBlock Margin="20 0 0 0" Text="Thành viên nhóm 2" TextWrapping="Wrap" FontWeight="Bold" Foreground="White" FontSize="25" />
+            <TextBlock Margin="20 0 0 0" Text="Tăng Thiện Tâm 21521408 (Leader)" TextWrapping="Wrap" FontWeight="Bold" Foreground="White" FontSize="25" />
+            <TextBlock Margin="20 0 0 0" Text="Phạm Phước Huy 21520932" TextWrapping="Wrap" FontWeight="Bold" Foreground="White" FontSize="25" />
+            <TextBlock Margin="20 0 0 0" Text="Nguyễn Lê Gia Bảo 21520614" TextWrapping="Wrap" FontWeight="Bold" Foreground="White" FontSize="25" />
+            <TextBlock Margin="20 0 0 0" Text="Trần Văn Thanh Tâm 21521411" TextWrapping="Wrap" FontWeight="Bold" Foreground="White" FontSize="25" />
+
+        </StackPanel>
+
+       
+
+
+    </Border>
+</UserControl>

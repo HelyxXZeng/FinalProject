@@ -155,7 +155,7 @@
                                     </StackPanel>
                                 </Button>
 
-                                <Button Style="{StaticResource PopupButton}">
+                                <Button Click="AboutUs" Style="{StaticResource PopupButton}">
                                     <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon Margin="10 0 0 0" Kind="InformationOutline" Style="{StaticResource optionButtonIcon}"/>
                                         <TextBlock Text="About us" Style="{StaticResource menuButtonTitle}"/>
