@@ -627,6 +627,15 @@ namespace MP3_Final
             {
                 using (System.IO.File.Create(path)) ;
                 listMenu.Children.Add(button);
+
+                //Library
+                BitmapImage bmI = new BitmapImage(new Uri(Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + "/Images/m2.png"));
+                PlaylistCard plCard = new PlaylistCard();
+                plCard.Title = button.Content.ToString();
+                plCard.PathImage = bmI;
+                plCard.ClickOpen += (sender, e) => OpenPlCard(sender, e, path);
+                plViewUC.playlist.Children.Add(plCard);
+                //
             }
         }
 
@@ -758,6 +767,19 @@ namespace MP3_Final
         private void ChangePlayListName(object sender, MouseButtonEventArgs e)
         {
             System.Windows.Controls.Button button = sender as System.Windows.Controls.Button;
+            
+            // library
+            PlaylistCard oldPlCard = new PlaylistCard();
+            for (int i = 0; i < plViewUC.playlist.Children.Count; i++)
+            {
+                PlaylistCard plCard = (PlaylistCard)plViewUC.playlist.Children[i];
+                if (button.Content.ToString() == plCard.Title.ToString())
+                {
+                    oldPlCard = plCard;
+                    break;
+                }
+            }
+            //
             string old = head + button.Content.ToString() + tail;
             ChangeAlbumName change = new ChangeAlbumName(button.Content.ToString());
             change.ShowDialog();
@@ -765,6 +787,9 @@ namespace MP3_Final
             string newName = ButtonToPath(button.Content.ToString());
             button.Tag = newName;
             System.IO.File.Move(old, newName);
+            // library
+            oldPlCard.Title = button.Content.ToString();
+            //
         }
 
         private void DeletePlayList(object sender, RoutedEventArgs e)
@@ -774,11 +799,24 @@ namespace MP3_Final
                 System.Windows.Controls.Button button = playList as System.Windows.Controls.Button;
                 if (button.Tag.ToString() == currentPlaylist)
                 {
+                    // library
+                    for (int i = 0; i < plViewUC.playlist.Children.Count; i++)
+                    {
+                        PlaylistCard plCard = (PlaylistCard)plViewUC.playlist.Children[i];
+                        if (plCard.Title.ToString() == button.Content.ToString())
+                        {
+                            plViewUC.playlist.Children.Remove(plCard);
+                            break;
+                        }
+                    }
+                    //
                     listMenu.Children.Remove(button);
                     System.IO.File.Delete(button.Tag.ToString());
                     return;
                 }
             }
+
+            
         }
 
         public static string ButtonToPath(string content)
@@ -1175,6 +1213,15 @@ namespace MP3_Final
             onSearch = false;
             playSearch = false;
             OpenPlayList(head + @"History" + tail);
+           
+            // change UI 
+            int temp = centerUI.Children.Count;
+            if (centerUI.Children[temp - 1] == plViewUC || centerUI.Children[temp - 1] == slrViewUC)
+                centerUI.Children.Remove(centerUI.Children[temp - 1]);
+            if (centerUI.Children[temp - 2] == plViewUC || centerUI.Children[temp - 2] == slrViewUC)
+                centerUI.Children.Remove(centerUI.Children[temp - 2]);
+            //
+
         }
         // revert non-selected playlists
         void NonePlaylist()
@@ -1185,6 +1232,12 @@ namespace MP3_Final
                 System.Windows.Controls.Button button = item as System.Windows.Controls.Button;
                 button.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("Transparent");
             }
+        }
+
+        private void AboutUs(object sender, RoutedEventArgs e)
+        {
+            AboutUs abu = new AboutUs();
+            abu.ShowDialog();
         }
 
         private void darkmodeBtn_Click(object sender, RoutedEventArgs e)
