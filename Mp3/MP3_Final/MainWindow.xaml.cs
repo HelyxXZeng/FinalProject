@@ -104,6 +104,11 @@ namespace MP3_Final
             media.MediaOpened += Media_MediaOpened;
             media.MediaEnded += Media_MediaEnded;
             media.MediaEnded += Media_Ended;// them event chay bai tiep theo
+
+            //
+            staticImage.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/Images/m2.png"));
+            img.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/Images/m2.png"));
+            //
         }
 
         public void CheckSong()
@@ -640,7 +645,8 @@ namespace MP3_Final
                 listMenu.Children.Add(button);
 
                 //Library
-                BitmapImage bmI = new BitmapImage(new Uri(Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + @"\Images\m2.png"));
+                BitmapImage bmI = new BitmapImage(new Uri(@"pack://application:,,,/Images/m2.png"));
+                //BitmapImage bmI = new BitmapImage(new Uri(Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + @"\Images\m2.png"));
                 PlaylistCard plCard = new PlaylistCard();
                 plCard.Title = button.Content.ToString();
                 plCard.PathImage = bmI;
@@ -1136,11 +1142,14 @@ namespace MP3_Final
                     {
                         if (lines.Length == 0)
                         {
-                            BitmapImage bitmap = new BitmapImage();
-                            bitmap.BeginInit();
-                            string urisource = Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + @"\Images\m2.png";
-                            bitmap.UriSource = new Uri(urisource);
-                            bitmap.EndInit();
+
+                            BitmapImage bitmap = new BitmapImage(new Uri(@"pack://application:,,,/Images/m2.png"));
+                            //bitmap.BeginInit();
+                            //BitmapImage bmI = new BitmapImage(new Uri(@"pack://application:,,,/Images/m2.png"));
+
+                            ////string urisource = Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + @"\Images\m2.png";
+                            //bitmap.UriSource = ;
+                            //bitmap.EndInit();
                             plCard.PathImage = bitmap;
                         }
                         else

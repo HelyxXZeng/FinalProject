@@ -294,7 +294,7 @@
                                     <RotateTransform x:Name="MyAnimatedTransform" Angle="0" />
                                 </Ellipse.RenderTransform>
                                 <Ellipse.Fill>
-                                    <ImageBrush x:Name="img" ImageSource = "/Images/m2.png"/>
+                                    <ImageBrush x:Name="img" ImageSource="pack://application:,,,/Images/m2.png" />
                                 </Ellipse.Fill>
                             </Ellipse>
 
@@ -333,7 +333,7 @@
 
                     <Rectangle RadiusX="5" RadiusY="5" Height="75" Width="75" VerticalAlignment="Center" Margin="5 0 0 0">
                         <Rectangle.Fill>
-                            <ImageBrush x:Name="staticImage" ImageSource="/Images/m2.png" />
+                            <ImageBrush x:Name="staticImage" ImageSource="pack://application:,,,/Images/m2.png" />
                         </Rectangle.Fill>
                     </Rectangle>
                     <WrapPanel  Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center">
