@@ -239,9 +239,9 @@ namespace MP3_Final
         {
             if (heartbtn.Foreground == Brushes.White)
             {
-                System.IO.File.AppendAllText(fav, songs[i].path + "\n");
+                System.IO.File.AppendAllText(fav, current + "\n");
             }
-            else System.IO.File.WriteAllLines(fav, System.IO.File.ReadLines(fav).Where(l => l != songs[i].path).ToList());
+            else System.IO.File.WriteAllLines(fav, System.IO.File.ReadLines(fav).Where(l => l != current).ToList());
             heartbtn.Foreground = (heartbtn.Foreground != Brushes.DeepPink) ? Brushes.DeepPink : Brushes.White;
         }
 
@@ -451,6 +451,7 @@ namespace MP3_Final
                 current = subSongs[i].path;
                 media.Open(new Uri(subSongs[i].path));
             }
+            getLyric(slrViewUC, current);
             media.Position = TimeSpan.Zero;// chay nhac tu 00:00
             media.Play();
         }
@@ -545,6 +546,16 @@ namespace MP3_Final
             {
                 Add_UcSongName(songs[i], i);
             }
+
+
+            // change UI 
+            int temp = centerUI.Children.Count;
+            if (centerUI.Children[temp - 1] == plViewUC || centerUI.Children[temp - 1] == slrViewUC)
+                centerUI.Children.Remove(centerUI.Children[temp - 1]);
+            if (centerUI.Children[temp - 2] == plViewUC || centerUI.Children[temp - 2] == slrViewUC)
+                centerUI.Children.Remove(centerUI.Children[temp - 2]);
+            //
+
         }
 
         // playlist click on the left section
@@ -629,7 +640,7 @@ namespace MP3_Final
                 listMenu.Children.Add(button);
 
                 //Library
-                BitmapImage bmI = new BitmapImage(new Uri(Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + "/Images/m2.png"));
+                BitmapImage bmI = new BitmapImage(new Uri(Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + @"\Images\m2.png"));
                 PlaylistCard plCard = new PlaylistCard();
                 plCard.Title = button.Content.ToString();
                 plCard.PathImage = bmI;
@@ -1127,7 +1138,7 @@ namespace MP3_Final
                         {
                             BitmapImage bitmap = new BitmapImage();
                             bitmap.BeginInit();
-                            string urisource = Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + "/Images/m2.png";
+                            string urisource = Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + @"\Images\m2.png";
                             bitmap.UriSource = new Uri(urisource);
                             bitmap.EndInit();
                             plCard.PathImage = bitmap;
