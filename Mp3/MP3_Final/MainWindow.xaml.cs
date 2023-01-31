@@ -56,14 +56,16 @@ namespace MP3_Final
 
         int i = 0; // bien toan cuc chi vi tri bai hat trong playlist
         public static string tail = @".txt";
-        public static string head = Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + @"\PlayList\";
+        public static string head = Environment.ExpandEnvironmentVariables(@"%LocalAppData%") + @"\MediaPlayer Project\Playlists\";
+        //public static string head = Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + @"\PlayList\";
         string fav = head + @"Favorite.txt";
         string history = head + @"History.txt";
         DispatcherTimer timer;
         bool shuffleMedia = false;
 
         //
-        public static string headCard = Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + @"\LocalFiles\";
+        public static string headCard = Environment.ExpandEnvironmentVariables(@"%LocalAppData%") + @"\MediaPlayer Project\LocalFiles\";
+        //public static string headCard = Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + @"\LocalFiles\";
         string localfilesPath = headCard + "Local Files.txt";
         PlaylistsView plViewUC = new PlaylistsView();
         songLyricView slrViewUC = new songLyricView();
@@ -84,6 +86,11 @@ namespace MP3_Final
             if (!System.IO.File.Exists(history))
             {
                 using (System.IO.File.Create(history)) ;
+            }
+
+            if (!System.IO.Directory.Exists(headCard))
+            {
+                System.IO.Directory.CreateDirectory(headCard);
             }
 
             if (!System.IO.File.Exists(localfilesPath))
