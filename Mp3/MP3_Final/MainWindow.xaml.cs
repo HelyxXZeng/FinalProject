@@ -66,7 +66,7 @@ namespace MP3_Final
         //
         public static string headCard = Environment.ExpandEnvironmentVariables(@"%LocalAppData%") + @"\MediaPlayer Project\LocalFiles\";
         //public static string headCard = Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + @"\LocalFiles\";
-        string localfilesPath = headCard + "Local Files.txt";
+        string localfilesPath = headCard + @"Local Files.txt";
         PlaylistsView plViewUC = new PlaylistsView();
         songLyricView slrViewUC = new songLyricView();
         //
