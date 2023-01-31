@@ -11,7 +11,7 @@
         WindowStyle="None"
         Background="Transparent"
         AllowsTransparency="True"
-        Title="Spotify Lite" WindowStartupLocation ="CenterScreen" WindowState="Maximized" MinWidth="1080" MinHeight="720" Height="720" Width="1080" >
+        Title="Spotify Lite" WindowStartupLocation ="CenterScreen" WindowState="Maximized"  MinWidth="1080" MinHeight="720" Height="720" Width="1080" >
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0" ResizeBorderThickness="5"/>
     </WindowChrome.WindowChrome>
@@ -92,7 +92,7 @@
 
                     </Button>
 
-                    <ToggleButton x:Name="MoreOptionToggleBtn" Grid.Row="5">
+                    <ToggleButton x:Name="MoreOptionToggleBtn" Grid.Row="5" HorizontalAlignment="Left" Width="225">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="ViewGridPlusOutline" Style="{StaticResource menuButtonIcon}"/>
                             <TextBlock Text="More Option" Style="{StaticResource menuButtonTitle}"/>
@@ -338,8 +338,8 @@
                     </Rectangle>
                     <WrapPanel  Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center">
 
-                        <TextBlock x:Name="titleTxtBlock" Text="Có không giữ" TextWrapping="Wrap" Foreground="White" FontSize="16" FontWeight="Bold"/>
-                        <TextBlock x:Name="singerTxtBlock" Text="Singer Singer Singer" Foreground="#9ae5c3" FontSize="14" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="titleTxtBlock" Text="Song Name" TextWrapping="Wrap" Foreground="White" FontSize="16" FontWeight="Bold"/>
+                        <TextBlock x:Name="singerTxtBlock" Text="Singers" Foreground="#9ae5c3" FontSize="14" FontWeight="SemiBold"/>
                     </WrapPanel>
 
                     <Button Margin="-5 0 0 0" HorizontalAlignment="Center" Grid.Column="2" x:Name="heartbtn" Style="{StaticResource playerButton}" Click="heartbtn_Click">

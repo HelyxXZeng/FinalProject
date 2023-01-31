@@ -10,7 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="IconApp\Spotify-2.png" />
     <None Remove="IconApp\Spotify.ico" />
+    <None Remove="Images\econ.png" />
     <None Remove="Images\folderSpotify.png" />
     <None Remove="Images\m2.png" />
   </ItemGroup>
@@ -25,7 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="IconApp\Spotify-2.png" />
     <Resource Include="IconApp\Spotify.ico" />
+    <Resource Include="Images\econ.png" />
     <Resource Include="Images\folderSpotify.png" />
     <Resource Include="Images\m2.png" />
   </ItemGroup>
