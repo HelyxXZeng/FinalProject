@@ -637,7 +637,7 @@ namespace MP3_Final
         {
             System.Windows.Controls.Button button = new System.Windows.Controls.Button();
             button.Style = System.Windows.Application.Current.TryFindResource("albumButton") as Style;
-            button.Content = "Album mới";
+            button.Content = "New Album";
             button.Tag = ButtonToPath(button.Content.ToString());
             button.Click += PlayListClick;
             button.MouseRightButtonDown += ChangePlayListName;

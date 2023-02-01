@@ -21,7 +21,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_5EB12331424A4DF488BEC40EB6301502"
+        "MsmKey" = "8:_BDF1C5DE86B04258A1CF813671FAC003"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -43,6 +43,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
         "Release"
         {
@@ -116,10 +124,10 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5EB12331424A4DF488BEC40EB6301502"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BDF1C5DE86B04258A1CF813671FAC003"
             {
-            "SourcePath" = "8:D:\\SD\\Econ.ico"
-            "TargetName" = "8:Econ.ico"
+            "SourcePath" = "8:..\\MP3_Final\\IconApp\\Spotify.ico"
+            "TargetName" = "8:Spotify.ico"
             "Tag" = "8:"
             "Folder" = "8:_4F97A08CF12B4684B0F9B103F0BE7580"
             "Condition" = "8:"
@@ -313,7 +321,7 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_13E16980C6A94DF3851A474680B0505C"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_28DA310A41DB47ABB4F1BC57D6089AB7"
             {
             "Name" = "8:Media Player Project"
             "Arguments" = "8:"
@@ -324,10 +332,10 @@
             "Target" = "8:_0C16414C01FA4E619DCD233A1FCAF4CC"
             "Folder" = "8:_13580851E9E64E1CB1CA4D2D1471FD9C"
             "WorkingFolder" = "8:_4F97A08CF12B4684B0F9B103F0BE7580"
-            "Icon" = "8:_5EB12331424A4DF488BEC40EB6301502"
+            "Icon" = "8:_BDF1C5DE86B04258A1CF813671FAC003"
             "Feature" = "8:"
             }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_8EAF0798F1EE43D3B3147E34A9AC075F"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_47A11BE045E942CB93F60A8726DB5A78"
             {
             "Name" = "8:Media Player Project"
             "Arguments" = "8:"
@@ -338,7 +346,7 @@
             "Target" = "8:_0C16414C01FA4E619DCD233A1FCAF4CC"
             "Folder" = "8:_327ECE8106CF4B65AF70BF90C688ACB9"
             "WorkingFolder" = "8:_4F97A08CF12B4684B0F9B103F0BE7580"
-            "Icon" = "8:_5EB12331424A4DF488BEC40EB6301502"
+            "Icon" = "8:_BDF1C5DE86B04258A1CF813671FAC003"
             "Feature" = "8:"
             }
         }
