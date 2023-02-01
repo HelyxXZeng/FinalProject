@@ -300,7 +300,7 @@
 
                             <!--Thông tin bài hát-->
                             <TextBlock Margin="10 0 0 0" HorizontalAlignment="Center" VerticalAlignment="Top" 
-                                       Grid.Row="1"  x:Name="infotextblock" Text="SONG'S INFORMATION" 
+                                       Grid.Row="1"  x:Name="infotextblock" Text="SONG INFORMATION" 
                                        TextWrapping="Wrap" Foreground="White" FontSize="16" FontWeight="Bold" />
                         </Grid>
 
