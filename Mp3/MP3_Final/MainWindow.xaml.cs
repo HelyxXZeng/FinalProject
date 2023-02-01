@@ -644,7 +644,7 @@ namespace MP3_Final
             string path = ButtonToPath(button.Content.ToString());
             if (System.IO.File.Exists(path))
             {
-                System.Windows.MessageBox.Show("Album bị trùng tên!");
+                System.Windows.MessageBox.Show("Duplicate file error!");
             }
             else
             {
