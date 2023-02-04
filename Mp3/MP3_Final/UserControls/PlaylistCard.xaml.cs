@@ -40,8 +40,9 @@ namespace MP3_Final.UserControls
             get { return (BitmapImage)GetValue(PathImageProperty); }
             set { SetValue(PathImageProperty, value); }
         }
+        public static BitmapImage bmI = new BitmapImage(new Uri(@"pack://application:,,,/Images/folderSpotify.png"));
 
-        public static BitmapImage bmI = new BitmapImage(new Uri(Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + "/Images/folderSpotify.png"));
+        //public static BitmapImage bmI = new BitmapImage(new Uri(Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + @"\Images\folderSpotify.png"));
 
         public static readonly DependencyProperty PathImageProperty = DependencyProperty.Register
             ("PathImage", typeof(BitmapImage), typeof(PlaylistCard), new PropertyMetadata(bmI));

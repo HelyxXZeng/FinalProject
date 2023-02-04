@@ -56,15 +56,17 @@ namespace MP3_Final
 
         int i = 0; // bien toan cuc chi vi tri bai hat trong playlist
         public static string tail = @".txt";
-        public static string head = Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + @"\PlayList\";
+        public static string head = Environment.ExpandEnvironmentVariables(@"%LocalAppData%") + @"\MediaPlayer Project\Playlists\";
+        //public static string head = Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + @"\PlayList\";
         string fav = head + @"Favorite.txt";
         string history = head + @"History.txt";
         DispatcherTimer timer;
         bool shuffleMedia = false;
 
         //
-        public static string headCard = Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + @"\LocalFiles\";
-        string localfilesPath = headCard + "Local Files.txt";
+        public static string headCard = Environment.ExpandEnvironmentVariables(@"%LocalAppData%") + @"\MediaPlayer Project\LocalFiles\";
+        //public static string headCard = Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + @"\LocalFiles\";
+        string localfilesPath = headCard + @"Local Files.txt";
         PlaylistsView plViewUC = new PlaylistsView();
         songLyricView slrViewUC = new songLyricView();
         //
@@ -86,6 +88,11 @@ namespace MP3_Final
                 using (System.IO.File.Create(history)) ;
             }
 
+            if (!System.IO.Directory.Exists(headCard))
+            {
+                System.IO.Directory.CreateDirectory(headCard);
+            }
+
             if (!System.IO.File.Exists(localfilesPath))
             {
                 using (System.IO.File.Create(localfilesPath)) ;
@@ -104,6 +111,11 @@ namespace MP3_Final
             media.MediaOpened += Media_MediaOpened;
             media.MediaEnded += Media_MediaEnded;
             media.MediaEnded += Media_Ended;// them event chay bai tiep theo
+
+            //
+            staticImage.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/Images/m2.png"));
+            img.ImageSource = new BitmapImage(new Uri(@"pack://application:,,,/Images/m2.png"));
+            //
         }
 
         public void CheckSong()
@@ -239,9 +251,9 @@ namespace MP3_Final
         {
             if (heartbtn.Foreground == Brushes.White)
             {
-                System.IO.File.AppendAllText(fav, songs[i].path + "\n");
+                System.IO.File.AppendAllText(fav, current + "\n");
             }
-            else System.IO.File.WriteAllLines(fav, System.IO.File.ReadLines(fav).Where(l => l != songs[i].path).ToList());
+            else System.IO.File.WriteAllLines(fav, System.IO.File.ReadLines(fav).Where(l => l != current).ToList());
             heartbtn.Foreground = (heartbtn.Foreground != Brushes.DeepPink) ? Brushes.DeepPink : Brushes.White;
         }
 
@@ -451,6 +463,7 @@ namespace MP3_Final
                 current = subSongs[i].path;
                 media.Open(new Uri(subSongs[i].path));
             }
+            getLyric(slrViewUC, current);
             media.Position = TimeSpan.Zero;// chay nhac tu 00:00
             media.Play();
         }
@@ -545,6 +558,16 @@ namespace MP3_Final
             {
                 Add_UcSongName(songs[i], i);
             }
+
+
+            // change UI 
+            int temp = centerUI.Children.Count;
+            if (centerUI.Children[temp - 1] == plViewUC || centerUI.Children[temp - 1] == slrViewUC)
+                centerUI.Children.Remove(centerUI.Children[temp - 1]);
+            if (centerUI.Children[temp - 2] == plViewUC || centerUI.Children[temp - 2] == slrViewUC)
+                centerUI.Children.Remove(centerUI.Children[temp - 2]);
+            //
+
         }
 
         // playlist click on the left section
@@ -614,14 +637,14 @@ namespace MP3_Final
         {
             System.Windows.Controls.Button button = new System.Windows.Controls.Button();
             button.Style = System.Windows.Application.Current.TryFindResource("albumButton") as Style;
-            button.Content = "Album mới";
+            button.Content = "New Album";
             button.Tag = ButtonToPath(button.Content.ToString());
             button.Click += PlayListClick;
             button.MouseRightButtonDown += ChangePlayListName;
             string path = ButtonToPath(button.Content.ToString());
             if (System.IO.File.Exists(path))
             {
-                System.Windows.MessageBox.Show("Album bị trùng tên!");
+                System.Windows.MessageBox.Show("Duplicate file error!");
             }
             else
             {
@@ -629,7 +652,8 @@ namespace MP3_Final
                 listMenu.Children.Add(button);
 
                 //Library
-                BitmapImage bmI = new BitmapImage(new Uri(Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + "/Images/m2.png"));
+                BitmapImage bmI = new BitmapImage(new Uri(@"pack://application:,,,/Images/m2.png"));
+                //BitmapImage bmI = new BitmapImage(new Uri(Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + @"\Images\m2.png"));
                 PlaylistCard plCard = new PlaylistCard();
                 plCard.Title = button.Content.ToString();
                 plCard.PathImage = bmI;
@@ -1125,11 +1149,14 @@ namespace MP3_Final
                     {
                         if (lines.Length == 0)
                         {
-                            BitmapImage bitmap = new BitmapImage();
-                            bitmap.BeginInit();
-                            string urisource = Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + "/Images/m2.png";
-                            bitmap.UriSource = new Uri(urisource);
-                            bitmap.EndInit();
+
+                            BitmapImage bitmap = new BitmapImage(new Uri(@"pack://application:,,,/Images/m2.png"));
+                            //bitmap.BeginInit();
+                            //BitmapImage bmI = new BitmapImage(new Uri(@"pack://application:,,,/Images/m2.png"));
+
+                            ////string urisource = Directory.GetParent(Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString()) + @"\Images\m2.png";
+                            //bitmap.UriSource = ;
+                            //bitmap.EndInit();
                             plCard.PathImage = bitmap;
                         }
                         else
