@@ -19,7 +19,7 @@
                 <ColumnDefinition Width="400"></ColumnDefinition>                    
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="360" Height="360">
-                <Image Source="pack://application:,,,/Images/econ.png"></Image>
+                <Image Source="pack://application:,,,/Images/new icon.png"></Image>
             </StackPanel>
             <StackPanel Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="25 0 50 0">
                 <WrapPanel>
