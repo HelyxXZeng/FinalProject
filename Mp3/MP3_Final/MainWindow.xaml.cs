@@ -580,6 +580,14 @@ namespace MP3_Final
             currentPlaylist = button.Tag.ToString();
             ChangeColorClickPlayList();
             OpenPlayList(path);
+
+            // change UI 
+            int temp = centerUI.Children.Count;
+            if (centerUI.Children[temp - 1] == plViewUC || centerUI.Children[temp - 1] == slrViewUC)
+                centerUI.Children.Remove(centerUI.Children[temp - 1]);
+            if (centerUI.Children[temp - 2] == plViewUC || centerUI.Children[temp - 2] == slrViewUC)
+                centerUI.Children.Remove(centerUI.Children[temp - 2]);
+            //
         }
 
         // highlight the selected playlist
@@ -813,6 +821,8 @@ namespace MP3_Final
             System.IO.File.Move(old, newName);
             // library
             oldPlCard.Title = button.Content.ToString();
+            string newPath = ButtonToPath(button.Content.ToString());
+            oldPlCard.ClickOpen += (sender, e) => OpenPlCard(sender, e, newPath);
             //
         }
 
