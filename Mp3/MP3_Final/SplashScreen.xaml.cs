@@ -39,7 +39,7 @@ namespace MP3_Final
             for(int i = 0; i <= 100;i++)
             {
                 (sender as BackgroundWorker).ReportProgress(i);
-                Thread.Sleep(60);
+                Thread.Sleep(20);
             }
         }
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
