@@ -944,7 +944,7 @@ namespace MP3_Final
             subSongs.Add(song);
             i = songs.Count - 1;
             Add_UcSongName(songs[i], i);
-            AddFile(localfilesPath, song.path);
+            AddList(localfilesPath, song.path);
         }
         // real load folder
         private void LoadFolderButton(object sender, RoutedEventArgs e)
@@ -1016,7 +1016,7 @@ namespace MP3_Final
                     subSongs.Add(song);
                     int index = songs.Count - 1;
                     Add_UcSongName(songs[index], index);
-                    AddFile(folderName, song.path);
+                    AddList(folderName, song.path);
                 }
             }
         }
@@ -1221,27 +1221,6 @@ namespace MP3_Final
             centerUI.Children.Remove((PlaylistsView)sender);
         }
 
-        // upload file function
-        private void AddFile(string Playlistpath, string songPath)
-        {
-            if (Playlistpath != null)
-            {
-                string[] files = System.IO.File.ReadAllLines(Playlistpath);
-                foreach (string file in files)
-                {
-                    if (songPath == file)
-                    {
-                        return;
-                    }
-                }
-
-                if (new FileInfo(Playlistpath).Length != 0)
-                {
-                    System.IO.File.AppendAllText(Playlistpath, "\n");
-                }
-                System.IO.File.AppendAllText(Playlistpath, songPath);
-            }
-        }
         // Home button on the left section
         private void Home_Click(object sender, RoutedEventArgs e)
         {
